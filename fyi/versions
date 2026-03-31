@@ -1,6 +1,6 @@
 File: semgrep-grammars/src/tree-sitter-scala/LICENSE
 Git repo name: tree-sitter-scala
-Latest commit in repo: 211bb726bb5857f872247b600c7c1808e641a8d4
+Latest commit in repo: 97aead18d97708190a51d4f551ea9b05b60641c9
 Last change in file:
   commit 18b7392472ae43a9f3f7f8c881bba6f452d0f97f
   Author: Max Brunsfeld <maxbrunsfeld@gmail.com>
@@ -12,57 +12,47 @@ Last change in file:
 ---
 File: semgrep-grammars/src/tree-sitter-scala/grammar.js
 Git repo name: tree-sitter-scala
-Latest commit in repo: 211bb726bb5857f872247b600c7c1808e641a8d4
+Latest commit in repo: 97aead18d97708190a51d4f551ea9b05b60641c9
 Last change in file:
-  commit 211bb726bb5857f872247b600c7c1808e641a8d4
-  Author: Tuấn-Anh Nguyễn <ubolonton@gmail.com>
-  Date:   Tue Jul 14 03:31:00 2020 +0700
+  commit 24114684a4b0543c89199873c6193345432aabb4
+  Author: GitHub <noreply@github.com>
+  Date:   Thu Aug 7 05:11:26 2025 +0000
   
-      Various improvements (#13)
-      
-      * Add supertypes
-      
-      * Support multi-line case clauses
-      
-      * Allow definitions in case clauses, expressions in class/object bodies
-      
-      * Add annotations, infix patterns, implicit parameters
-      
-      * Add tree-sitter CLI declaration to package.json
-      
-      * Add annotations on type parameters
-      
-      * Add type annotations, type projections; fix compound types
-      
-      * Fix operator_identifier regexp
-      
-      * Add tuple types and repeated parameter types
-      
-      * Give infix_pattern higher precedence than capture_pattern
-      
-      * Make infix_type nestable
-      
-      * Allow body-less trait_definition
-      
-      * Allow omitting parens when function_type's input is a single type
-      
-      * Put all alternatives function_type's parameters under parameter_types
-      
-      * Give alternative_pattern lower precedence than typed_pattern
-      
-      * Remove parenthesized_pattern
-      
-      * Allow empty body in case_clause
-      
-      * Regenerate parser
+      chore: generate and sync from 98bca07a3043ecb195f61817a94a909445d7d637
 ---
 File: semgrep-grammars/src/semgrep-scala/grammar.js
-Git repo name: ocaml-tree-sitter
-Latest commit in repo: f0469e1b59ee4df9d8cdded2a7d5cb124f3ea264
+Git repo name: otss-update-22
+Latest commit in repo: cde77372873ae26ad23f691d417fd53f5ebf051a
 Last change in file:
-  commit 769651254e129b03a813d3a3ece6c6c54e84764a
-  Author: Martin Jambon <martin@returntocorp.com>
-  Date:   Thu Feb 18 20:11:50 2021 -0800
+  commit cde77372873ae26ad23f691d417fd53f5ebf051a
+  Author: Cooper Pierce <cooper@semgrep.com>
+  Date:   Thu Mar 26 14:16:23 2026 -0400
   
-      Add Scala
+      feat: semgrep pattern extensions for Scala
+      
+      Adds semgrep-scala, extending the tree-sitter-scala grammar with
+      semgrep pattern constructs: metavariables ($FOO), ellipsis (...),
+      named ellipsis ($...ARGS), and deep expressions (<... e ...>).
+      
+      Grammar extensions (common/semgrep-ext.js):
+      - __SEMGREP_EXPRESSION, __SEMGREP_STATEMENT, __SEMGREP_MEMBER_DECL
+        sentinel tokens as top-level entry points
+      - semgrep_metavariable, semgrep_ellipsis, semgrep_ellipsis_metavariable,
+        deep_expression as new terminal/rule types
+      - _simple_expression extended to allow semgrep constructs in expression
+        positions (arguments, bodies, infix operands, etc.)
+      - _pattern extended for ellipsis in case class and tuple patterns
+      - parameter and class_parameter extended for ellipsis in parameter lists
+      - enumerator extended for ellipsis between for-comprehension generators
+      
+      Scanner fix (src/scanner.c):
+      - AUTOMATIC_SEMICOLON suppression for '.' is refined to only suppress
+        when '.' is followed by a non-dot character (i.e., a method chain).
+        '...' at line-start now correctly triggers semicolon insertion,
+        matching the approach used in semgrep-kotlin.
+      
+      Test corpus covers definitions, disambiguation, expressions, patterns,
+      statements, and real-world security/taint patterns.
+      
+      Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ---

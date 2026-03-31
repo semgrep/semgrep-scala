@@ -1,31 +1,20 @@
 /*
   semgrep-scala
 
-  Extends the standard scala grammar with semgrep pattern constructs.
+  Extends the standard Scala grammar with semgrep pattern constructs.
 */
 
 const base_grammar = require('tree-sitter-scala/grammar');
 
+const semgrepExt = require('./common/semgrep-ext');
+
+// _alpha_identifier is the `word` rule; it must remain a terminal (regex)
+// token. Remove it from the base grammar object before extending so that our
+// identifier extension (which wraps it inside a choice) doesn't conflict with
+// the word setting.
+delete base_grammar.grammar.word;
+
 module.exports = grammar(base_grammar, {
-  name: 'scala',
-
-  conflicts: ($, previous) => previous.concat([
-  ]),
-
-  /*
-     Support for semgrep ellipsis ('...') and metavariables ('$FOO'),
-     if they're not already part of the base grammar.
-  */
-  rules: {
-  /*
-    semgrep_ellipsis: $ => '...',
-
-    _expression: ($, previous) => {
-      return choice(
-        $.semgrep_ellipsis,
-        ...previous.members
-      );
-    }
-  */
-  }
+    name: 'scala',
+    ...semgrepExt,
 });
