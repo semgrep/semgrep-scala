@@ -22,7 +22,7 @@ Last change in file:
 ---
 File: semgrep-grammars/src/semgrep-scala/grammar.js
 Git repo name: otss-update-22
-Latest commit in repo: cde77372873ae26ad23f691d417fd53f5ebf051a
+Latest commit in repo: 22318e1cc9b9378fa1be3c84434d33f5a40870f5
 Last change in file:
   commit cde77372873ae26ad23f691d417fd53f5ebf051a
   Author: Cooper Pierce <cooper@semgrep.com>
