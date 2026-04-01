@@ -276,7 +276,7 @@ and anon_choice_dollar_esc_fba2882 = [
   | `Interp of interpolation
 ]
 
-and anon_choice_enum_case_defins_6a7e2ee = [
+and anon_choice_enum_case_defins_b7955e9 = [
     `Enum_case_defins of (
         annotation list (* zero or more *)
       * Token.t (* "case" *)
@@ -290,12 +290,12 @@ and anon_choice_enum_case_defins_6a7e2ee = [
         ]
     )
   | `Exp of expression
-  | `Choice_given_defi of definition
+  | `Choice_choice_given_defi of definition
 ]
 
-and anon_choice_exp_569cb0e = [
+and anon_choice_exp_5763a53 = [
     `Exp of expression
-  | `Choice_given_defi of definition
+  | `Choice_choice_given_defi of definition
   | `End_marker of end_marker
   | `SEMI of Token.t (* ";" *)
 ]
@@ -366,8 +366,8 @@ and bindings = (
 )
 
 and block = (
-    anon_choice_exp_569cb0e
-  * (semicolon * anon_choice_exp_569cb0e) list (* zero or more *)
+    anon_choice_exp_5763a53
+  * (semicolon * anon_choice_exp_5763a53) list (* zero or more *)
   * semicolon option
 )
 
@@ -448,6 +448,14 @@ and class_constructor = (
   * access_modifier option
   * (automatic_semicolon (*tok*) option * class_parameters)
       list (* zero or more *)
+)
+
+and class_definition = (
+    annotation list (* zero or more *)
+  * modifiers option
+  * Token.t (* "case" *) option
+  * Token.t (* "class" *)
+  * class_definition_
 )
 
 and class_definition_ = (
@@ -550,97 +558,39 @@ and contravariant_type_parameter = (Token.t (* "-" *) * type_parameter)
 and covariant_type_parameter = (Token.t (* "+" *) * type_parameter)
 
 and definition = [
-    `Given_defi of (
-        annotation list (* zero or more *)
-      * modifiers option
-      * Token.t (* "given" *)
-      * given_constructor option
-      * given_sig list (* zero or more *)
-      * [
-            `Stru_inst of structural_instance
-          | `Anno_type_opt_EQ_inde_exp of (
-                annotated_type
-              * (Token.t (* "=" *) * indentable_expression) option
-            )
-        ]
-    )
-  | `Exte_defi of (
-        Token.t (* "extension" *)
-      * type_parameters option
-      * given_conditional list (* zero or more *)
-      * [
-            `Exte_temp_body of extension_template_body
-          | `Func_defi of function_definition
-          | `Func_decl of function_declaration
-        ]
-    )
-  | `Class_defi of (
-        annotation list (* zero or more *)
-      * modifiers option
-      * Token.t (* "case" *) option
-      * Token.t (* "class" *)
-      * class_definition_
-    )
-  | `Import_decl of (
-        Token.t (* "import" *)
-      * namespace_expression
-      * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
-    )
-  | `Export_decl of (
-        Token.t (* "export" *)
-      * namespace_expression
-      * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
-    )
-  | `Obj_defi of (
-        annotation list (* zero or more *)
-      * modifiers option
-      * Token.t (* "case" *) option
-      * Token.t (* "object" *)
-      * object_definition_
-    )
-  | `Enum_defi of (
-        annotation list (* zero or more *)
-      * Token.t (* "enum" *)
-      * class_constructor
-      * extends_clause option
-      * derives_clause option
-      * enum_body
-    )
-  | `Trait_defi of (
-        annotation list (* zero or more *)
-      * modifiers option
-      * Token.t (* "trait" *)
-      * class_definition_
-    )
-  | `Val_defi of val_definition
-  | `Val_decl of val_declaration
-  | `Var_defi of var_definition
-  | `Var_decl of var_declaration
-  | `Type_defi of (
-        annotation list (* zero or more *)
-      * modifiers option
-      * Token.t (* "opaque" *) option
-      * Token.t (* "type" *)
-      * type_constructor
-      * (Token.t (* "=" *) * type_) option
-    )
-  | `Func_defi of function_definition
-  | `Func_decl of function_declaration
-  | `Pack_clause of (
-        Token.t (* "package" *)
-      * package_identifier
-      * structural_type option
-    )
-  | `Pack_obj of (
-        Token.t (* "package" *) * Token.t (* "object" *) * object_definition_
+    `Choice_given_defi of [
+        `Given_defi of given_definition
+      | `Exte_defi of extension_definition
+      | `Class_defi of class_definition
+      | `Import_decl of import_declaration
+      | `Export_decl of export_declaration
+      | `Obj_defi of object_definition
+      | `Enum_defi of enum_definition
+      | `Trait_defi of trait_definition
+      | `Val_defi of val_definition
+      | `Val_decl of val_declaration
+      | `Var_defi of var_definition
+      | `Var_decl of var_declaration
+      | `Type_defi of type_definition
+      | `Func_defi of function_definition
+      | `Func_decl of function_declaration
+      | `Pack_clause of package_clause
+      | `Pack_obj of package_object
+    ]
+  | `Semg_val_or_var_defi of (
+        semgrep_metavariable (*tok*)
+      * anon_choice_pat_a6d147b
+      * self_type_ascription option
+      * Token.t (* "=" *)
+      * indentable_expression
     )
 ]
 
 and definition_body = (automatic_semicolon (*tok*) option * structural_type)
 
 and enum_block = (
-    anon_choice_enum_case_defins_6a7e2ee
-  * (semicolon * anon_choice_enum_case_defins_6a7e2ee)
+    anon_choice_enum_case_defins_b7955e9
+  * (semicolon * anon_choice_enum_case_defins_b7955e9)
       list (* zero or more *)
   * semicolon option
 )
@@ -655,6 +605,15 @@ and enum_body = [
       * Token.t (* "}" *)
     )
 ]
+
+and enum_definition = (
+    annotation list (* zero or more *)
+  * Token.t (* "enum" *)
+  * class_constructor
+  * extends_clause option
+  * derives_clause option
+  * enum_body
+)
 
 and enumerator = [
     `Choice_opt_case_choice_choice_choice_id_choice_LTDASH_exp_opt_guard of [
@@ -684,6 +643,12 @@ and enumerators = [
       * outdent (*tok*)
     )
 ]
+
+and export_declaration = (
+    Token.t (* "export" *)
+  * namespace_expression
+  * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
+)
 
 and expr_case_clause = (Token.t (* "case" *) * case_pattern * expression)
 
@@ -724,10 +689,12 @@ and expression = [
         (type_parameters * Token.t (* "=>" *)) option
       * [
             `Bindis of bindings
-          | `Opt_impl_choice_id of (
-                Token.t (* "implicit" *) option
+          | `Impl_choice_id_opt_COLON_choice_type of (
+                Token.t (* "implicit" *)
               * type_identifier
+              * (Token.t (* ":" *) * param_type) option
             )
+          | `Choice_id of type_identifier
           | `Wild of Token.t (* "_" *)
         ]
       * anon_choice_EQGT_ce418c1
@@ -763,6 +730,17 @@ and extends_clause = (
     Token.t (* "extends" *)
   * constructor_applications
   * arguments option
+)
+
+and extension_definition = (
+    Token.t (* "extension" *)
+  * type_parameters option
+  * given_conditional list (* zero or more *)
+  * [
+        `Exte_temp_body of extension_template_body
+      | `Func_defi of function_definition
+      | `Func_decl of function_declaration
+    ]
 )
 
 and extension_template_body = [
@@ -860,6 +838,21 @@ and given_constructor = (
   * Token.t (* ":" *)
 )
 
+and given_definition = (
+    annotation list (* zero or more *)
+  * modifiers option
+  * Token.t (* "given" *)
+  * given_constructor option
+  * given_sig list (* zero or more *)
+  * [
+        `Stru_inst of structural_instance
+      | `Anno_type_opt_EQ_inde_exp of (
+            annotated_type
+          * (Token.t (* "=" *) * indentable_expression) option
+        )
+    ]
+)
+
 and given_pattern = (Token.t (* "given" *) * type_)
 
 and given_sig = (given_conditional * Token.t (* "=>" *))
@@ -870,6 +863,12 @@ and if_condition = [
     `Paren_exp of parenthesized_expression
   | `Inde_exp_then of (indentable_expression * Token.t (* "then" *))
 ]
+
+and import_declaration = (
+    Token.t (* "import" *)
+  * namespace_expression
+  * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
+)
 
 and import_selectors = namespace_selectors
 
@@ -999,11 +998,29 @@ and namespace_selectors = (
   * Token.t (* "}" *)
 )
 
+and object_definition = (
+    annotation list (* zero or more *)
+  * modifiers option
+  * Token.t (* "case" *) option
+  * Token.t (* "object" *)
+  * object_definition_
+)
+
 and object_definition_ = (
     type_identifier
   * extends_clause option
   * derives_clause option
   * definition_body option
+)
+
+and package_clause = (
+    Token.t (* "package" *)
+  * package_identifier
+  * structural_type option
+)
+
+and package_object = (
+    Token.t (* "package" *) * Token.t (* "object" *) * object_definition_
 )
 
 and param_type = [
@@ -1230,6 +1247,13 @@ and template_body = [
     )
 ]
 
+and trait_definition = (
+    annotation list (* zero or more *)
+  * modifiers option
+  * Token.t (* "trait" *)
+  * class_definition_
+)
+
 and tuple_expression = (
     Token.t (* "(" *)
   * expression
@@ -1277,6 +1301,15 @@ and type_constructor = (
   * lower_bound option
   * upper_bound option
   * context_bounds option
+)
+
+and type_definition = (
+    annotation list (* zero or more *)
+  * modifiers option
+  * Token.t (* "opaque" *) option
+  * Token.t (* "type" *)
+  * type_constructor
+  * (Token.t (* "=" *) * type_) option
 )
 
 and type_lambda = (
@@ -1375,7 +1408,7 @@ type top_level_definition = [
     `Semg_exp of (tok_prec_p100___semgrep_expression (*tok*) * expression)
   | `Semg_stmt of (
         tok_prec_p100___semgrep_statement (*tok*)
-      * [ `Exp of expression | `Choice_given_defi of definition ]
+      * [ `Exp of expression | `Choice_choice_given_defi of definition ]
     )
   | `Semg_member_decl of (
         tok_prec_p100___semgrep_member_decl (*tok*)
@@ -1388,8 +1421,8 @@ type top_level_definition = [
           | `Var_decl of var_declaration
         ]
     )
-  | `Choice_choice_given_defi of [
-        `Choice_given_defi of definition
+  | `Choice_choice_choice_given_defi of [
+        `Choice_choice_given_defi of definition
       | `End_marker of end_marker
       | `Exp of expression
     ]
@@ -1492,14 +1525,6 @@ type braced_template_body (* inlined *) = (
   * Token.t (* "}" *)
 )
 
-type class_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * modifiers option
-  * Token.t (* "case" *) option
-  * Token.t (* "class" *)
-  * class_definition_
-)
-
 type deep_expression (* inlined *) = (
     Token.t (* "<..." *) * expression * Token.t (* "...>" *)
 )
@@ -1521,48 +1546,7 @@ type enum_case_definitions (* inlined *) = (
     ]
 )
 
-type enum_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * Token.t (* "enum" *)
-  * class_constructor
-  * extends_clause option
-  * derives_clause option
-  * enum_body
-)
-
-type export_declaration (* inlined *) = (
-    Token.t (* "export" *)
-  * namespace_expression
-  * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
-)
-
-type extension_definition (* inlined *) = (
-    Token.t (* "extension" *)
-  * type_parameters option
-  * given_conditional list (* zero or more *)
-  * [
-        `Exte_temp_body of extension_template_body
-      | `Func_defi of function_definition
-      | `Func_decl of function_declaration
-    ]
-)
-
 type generic_type (* inlined *) = (simple_type * type_arguments)
-
-type given_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * modifiers option
-  * Token.t (* "given" *)
-  * given_constructor option
-  * given_sig list (* zero or more *)
-  * [
-        `Stru_inst of structural_instance
-      | `Anno_type_opt_EQ_inde_exp of (
-            annotated_type
-          * (Token.t (* "=" *) * indentable_expression) option
-        )
-    ]
-)
 
 type if_expression (* inlined *) = (
     Token.t (* "inline" *) option
@@ -1571,12 +1555,6 @@ type if_expression (* inlined *) = (
   * indentable_expression
   * (Token.t (* ";" *) option * Token.t (* "else" *) * indentable_expression)
       option
-)
-
-type import_declaration (* inlined *) = (
-    Token.t (* "import" *)
-  * namespace_expression
-  * (Token.t (* "," *) * namespace_expression) list (* zero or more *)
 )
 
 type indented_template_body (* inlined *) = (
@@ -1591,10 +1569,12 @@ type lambda_expression (* inlined *) = (
     (type_parameters * Token.t (* "=>" *)) option
   * [
         `Bindis of bindings
-      | `Opt_impl_choice_id of (
-            Token.t (* "implicit" *) option
+      | `Impl_choice_id_opt_COLON_choice_type of (
+            Token.t (* "implicit" *)
           * type_identifier
+          * (Token.t (* ":" *) * param_type) option
         )
+      | `Choice_id of type_identifier
       | `Wild of Token.t (* "_" *)
     ]
   * anon_choice_EQGT_ce418c1
@@ -1628,24 +1608,6 @@ type named_tuple_type (* inlined *) = (
 
 type namespace_given_by_type (* inlined *) = (Token.t (* "given" *) * type_)
 
-type object_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * modifiers option
-  * Token.t (* "case" *) option
-  * Token.t (* "object" *)
-  * object_definition_
-)
-
-type package_clause (* inlined *) = (
-    Token.t (* "package" *)
-  * package_identifier
-  * structural_type option
-)
-
-type package_object (* inlined *) = (
-    Token.t (* "package" *) * Token.t (* "object" *) * object_definition_
-)
-
 type projected_type (* inlined *) = (
     simple_type * Token.t (* "#" *) * type_identifier
 )
@@ -1657,14 +1619,15 @@ type return_expression (* inlined *) = (
   * expression option
 )
 
-type throw_expression (* inlined *) = (Token.t (* "throw" *) * expression)
-
-type trait_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * modifiers option
-  * Token.t (* "trait" *)
-  * class_definition_
+type semgrep_val_or_var_definition (* inlined *) = (
+    semgrep_metavariable (*tok*)
+  * anon_choice_pat_a6d147b
+  * self_type_ascription option
+  * Token.t (* "=" *)
+  * indentable_expression
 )
+
+type throw_expression (* inlined *) = (Token.t (* "throw" *) * expression)
 
 type try_expression (* inlined *) = (
     Token.t (* "try" *)
@@ -1679,15 +1642,6 @@ type tuple_type (* inlined *) = (
   * (Token.t (* "," *) * type_) list (* zero or more *)
   * Token.t (* "," *) option
   * Token.t (* ")" *)
-)
-
-type type_definition (* inlined *) = (
-    annotation list (* zero or more *)
-  * modifiers option
-  * Token.t (* "opaque" *) option
-  * Token.t (* "type" *)
-  * type_constructor
-  * (Token.t (* "=" *) * type_) option
 )
 
 type using_parameters_clause (* inlined *) = (
@@ -1720,7 +1674,7 @@ type semgrep_member_decl (* inlined *) = (
 
 type semgrep_statement (* inlined *) = (
     tok_prec_p100___semgrep_statement (*tok*)
-  * [ `Exp of expression | `Choice_given_defi of definition ]
+  * [ `Exp of expression | `Choice_choice_given_defi of definition ]
 )
 
 type extra = [

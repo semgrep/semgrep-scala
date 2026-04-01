@@ -588,23 +588,26 @@ let children_regexps : (string * Run.exp option) list = [
       Alt [|
         Token (Name "expression");
         Alt [|
-          Token (Name "given_definition");
-          Token (Name "extension_definition");
-          Token (Name "class_definition");
-          Token (Name "import_declaration");
-          Token (Name "export_declaration");
-          Token (Name "object_definition");
-          Token (Name "enum_definition");
-          Token (Name "trait_definition");
-          Token (Name "val_definition");
-          Token (Name "val_declaration");
-          Token (Name "var_definition");
-          Token (Name "var_declaration");
-          Token (Name "type_definition");
-          Token (Name "function_definition");
-          Token (Name "function_declaration");
-          Token (Name "package_clause");
-          Token (Name "package_object");
+          Alt [|
+            Token (Name "given_definition");
+            Token (Name "extension_definition");
+            Token (Name "class_definition");
+            Token (Name "import_declaration");
+            Token (Name "export_declaration");
+            Token (Name "object_definition");
+            Token (Name "enum_definition");
+            Token (Name "trait_definition");
+            Token (Name "val_definition");
+            Token (Name "val_declaration");
+            Token (Name "var_definition");
+            Token (Name "var_declaration");
+            Token (Name "type_definition");
+            Token (Name "function_definition");
+            Token (Name "function_declaration");
+            Token (Name "package_clause");
+            Token (Name "package_object");
+          |];
+          Token (Name "semgrep_val_or_var_definition");
         |];
         Token (Name "end_marker");
         Token (Literal ";");
@@ -618,23 +621,26 @@ let children_regexps : (string * Run.exp option) list = [
           Alt [|
             Token (Name "expression");
             Alt [|
-              Token (Name "given_definition");
-              Token (Name "extension_definition");
-              Token (Name "class_definition");
-              Token (Name "import_declaration");
-              Token (Name "export_declaration");
-              Token (Name "object_definition");
-              Token (Name "enum_definition");
-              Token (Name "trait_definition");
-              Token (Name "val_definition");
-              Token (Name "val_declaration");
-              Token (Name "var_definition");
-              Token (Name "var_declaration");
-              Token (Name "type_definition");
-              Token (Name "function_definition");
-              Token (Name "function_declaration");
-              Token (Name "package_clause");
-              Token (Name "package_object");
+              Alt [|
+                Token (Name "given_definition");
+                Token (Name "extension_definition");
+                Token (Name "class_definition");
+                Token (Name "import_declaration");
+                Token (Name "export_declaration");
+                Token (Name "object_definition");
+                Token (Name "enum_definition");
+                Token (Name "trait_definition");
+                Token (Name "val_definition");
+                Token (Name "val_declaration");
+                Token (Name "var_definition");
+                Token (Name "var_declaration");
+                Token (Name "type_definition");
+                Token (Name "function_definition");
+                Token (Name "function_declaration");
+                Token (Name "package_clause");
+                Token (Name "package_object");
+              |];
+              Token (Name "semgrep_val_or_var_definition");
             |];
             Token (Name "end_marker");
             Token (Literal ";");
@@ -1231,23 +1237,26 @@ let children_regexps : (string * Run.exp option) list = [
         Token (Name "enum_case_definitions");
         Token (Name "expression");
         Alt [|
-          Token (Name "given_definition");
-          Token (Name "extension_definition");
-          Token (Name "class_definition");
-          Token (Name "import_declaration");
-          Token (Name "export_declaration");
-          Token (Name "object_definition");
-          Token (Name "enum_definition");
-          Token (Name "trait_definition");
-          Token (Name "val_definition");
-          Token (Name "val_declaration");
-          Token (Name "var_definition");
-          Token (Name "var_declaration");
-          Token (Name "type_definition");
-          Token (Name "function_definition");
-          Token (Name "function_declaration");
-          Token (Name "package_clause");
-          Token (Name "package_object");
+          Alt [|
+            Token (Name "given_definition");
+            Token (Name "extension_definition");
+            Token (Name "class_definition");
+            Token (Name "import_declaration");
+            Token (Name "export_declaration");
+            Token (Name "object_definition");
+            Token (Name "enum_definition");
+            Token (Name "trait_definition");
+            Token (Name "val_definition");
+            Token (Name "val_declaration");
+            Token (Name "var_definition");
+            Token (Name "var_declaration");
+            Token (Name "type_definition");
+            Token (Name "function_definition");
+            Token (Name "function_declaration");
+            Token (Name "package_clause");
+            Token (Name "package_object");
+          |];
+          Token (Name "semgrep_val_or_var_definition");
         |];
       |];
       Repeat (
@@ -1260,23 +1269,26 @@ let children_regexps : (string * Run.exp option) list = [
             Token (Name "enum_case_definitions");
             Token (Name "expression");
             Alt [|
-              Token (Name "given_definition");
-              Token (Name "extension_definition");
-              Token (Name "class_definition");
-              Token (Name "import_declaration");
-              Token (Name "export_declaration");
-              Token (Name "object_definition");
-              Token (Name "enum_definition");
-              Token (Name "trait_definition");
-              Token (Name "val_definition");
-              Token (Name "val_declaration");
-              Token (Name "var_definition");
-              Token (Name "var_declaration");
-              Token (Name "type_definition");
-              Token (Name "function_definition");
-              Token (Name "function_declaration");
-              Token (Name "package_clause");
-              Token (Name "package_object");
+              Alt [|
+                Token (Name "given_definition");
+                Token (Name "extension_definition");
+                Token (Name "class_definition");
+                Token (Name "import_declaration");
+                Token (Name "export_declaration");
+                Token (Name "object_definition");
+                Token (Name "enum_definition");
+                Token (Name "trait_definition");
+                Token (Name "val_definition");
+                Token (Name "val_declaration");
+                Token (Name "var_definition");
+                Token (Name "var_declaration");
+                Token (Name "type_definition");
+                Token (Name "function_definition");
+                Token (Name "function_declaration");
+                Token (Name "package_clause");
+                Token (Name "package_object");
+              |];
+              Token (Name "semgrep_val_or_var_definition");
             |];
           |];
         ];
@@ -2064,14 +2076,26 @@ let children_regexps : (string * Run.exp option) list = [
       Alt [|
         Token (Name "bindings");
         Seq [
-          Opt (
-            Token (Literal "implicit");
-          );
+          Token (Literal "implicit");
           Alt [|
             Token (Name "identifier");
             Token (Name "operator_identifier");
           |];
+          Opt (
+            Seq [
+              Token (Literal ":");
+              Alt [|
+                Token (Name "type");
+                Token (Name "lazy_parameter_type");
+                Token (Name "repeated_parameter_type");
+              |];
+            ];
+          );
         ];
+        Alt [|
+          Token (Name "identifier");
+          Token (Name "operator_identifier");
+        |];
         Token (Name "wildcard");
       |];
       Alt [|
@@ -2594,6 +2618,49 @@ let children_regexps : (string * Run.exp option) list = [
     Seq [
       Token (Literal ":");
       Token (Name "type");
+    ];
+  );
+  "semgrep_val_or_var_definition",
+  Some (
+    Seq [
+      Token (Name "semgrep_metavariable");
+      Alt [|
+        Alt [|
+          Alt [|
+            Alt [|
+              Token (Name "identifier");
+              Token (Name "operator_identifier");
+            |];
+            Token (Name "stable_identifier");
+            Token (Name "interpolated_string_expression");
+            Token (Name "capture_pattern");
+            Token (Name "tuple_pattern");
+            Token (Name "named_tuple_pattern");
+            Token (Name "case_class_pattern");
+            Token (Name "infix_pattern");
+            Token (Name "alternative_pattern");
+            Token (Name "typed_pattern");
+            Token (Name "given_pattern");
+            Token (Name "quote_expression");
+            Alt [|
+              Token (Name "non_null_literal");
+              Token (Name "null_literal");
+            |];
+            Token (Name "wildcard");
+            Token (Name "repeat_pattern");
+          |];
+          Token (Name "semgrep_ellipsis");
+        |];
+        Token (Name "identifiers");
+      |];
+      Opt (
+        Seq [
+          Token (Literal ":");
+          Token (Name "type");
+        ];
+      );
+      Token (Literal "=");
+      Token (Name "indentable_expression");
     ];
   );
   "simple_enum_case",
@@ -3277,23 +3344,26 @@ let children_regexps : (string * Run.exp option) list = [
       Alt [|
         Token (Name "expression");
         Alt [|
-          Token (Name "given_definition");
-          Token (Name "extension_definition");
-          Token (Name "class_definition");
-          Token (Name "import_declaration");
-          Token (Name "export_declaration");
-          Token (Name "object_definition");
-          Token (Name "enum_definition");
-          Token (Name "trait_definition");
-          Token (Name "val_definition");
-          Token (Name "val_declaration");
-          Token (Name "var_definition");
-          Token (Name "var_declaration");
-          Token (Name "type_definition");
-          Token (Name "function_definition");
-          Token (Name "function_declaration");
-          Token (Name "package_clause");
-          Token (Name "package_object");
+          Alt [|
+            Token (Name "given_definition");
+            Token (Name "extension_definition");
+            Token (Name "class_definition");
+            Token (Name "import_declaration");
+            Token (Name "export_declaration");
+            Token (Name "object_definition");
+            Token (Name "enum_definition");
+            Token (Name "trait_definition");
+            Token (Name "val_definition");
+            Token (Name "val_declaration");
+            Token (Name "var_definition");
+            Token (Name "var_declaration");
+            Token (Name "type_definition");
+            Token (Name "function_definition");
+            Token (Name "function_declaration");
+            Token (Name "package_clause");
+            Token (Name "package_object");
+          |];
+          Token (Name "semgrep_val_or_var_definition");
         |];
       |];
     ];
@@ -3306,23 +3376,26 @@ let children_regexps : (string * Run.exp option) list = [
       Token (Name "semgrep_member_decl");
       Alt [|
         Alt [|
-          Token (Name "given_definition");
-          Token (Name "extension_definition");
-          Token (Name "class_definition");
-          Token (Name "import_declaration");
-          Token (Name "export_declaration");
-          Token (Name "object_definition");
-          Token (Name "enum_definition");
-          Token (Name "trait_definition");
-          Token (Name "val_definition");
-          Token (Name "val_declaration");
-          Token (Name "var_definition");
-          Token (Name "var_declaration");
-          Token (Name "type_definition");
-          Token (Name "function_definition");
-          Token (Name "function_declaration");
-          Token (Name "package_clause");
-          Token (Name "package_object");
+          Alt [|
+            Token (Name "given_definition");
+            Token (Name "extension_definition");
+            Token (Name "class_definition");
+            Token (Name "import_declaration");
+            Token (Name "export_declaration");
+            Token (Name "object_definition");
+            Token (Name "enum_definition");
+            Token (Name "trait_definition");
+            Token (Name "val_definition");
+            Token (Name "val_declaration");
+            Token (Name "var_definition");
+            Token (Name "var_declaration");
+            Token (Name "type_definition");
+            Token (Name "function_definition");
+            Token (Name "function_declaration");
+            Token (Name "package_clause");
+            Token (Name "package_object");
+          |];
+          Token (Name "semgrep_val_or_var_definition");
         |];
         Token (Name "end_marker");
         Token (Name "expression");
@@ -4889,75 +4962,85 @@ and trans_block ((kind, body) : mt) : CST.block =
                   trans_expression (Run.matcher_token v)
                 )
             | Alt (1, v) ->
-                `Choice_given_defi (
+                `Choice_choice_given_defi (
                   (match v with
                   | Alt (0, v) ->
-                      `Given_defi (
-                        trans_given_definition (Run.matcher_token v)
+                      `Choice_given_defi (
+                        (match v with
+                        | Alt (0, v) ->
+                            `Given_defi (
+                              trans_given_definition (Run.matcher_token v)
+                            )
+                        | Alt (1, v) ->
+                            `Exte_defi (
+                              trans_extension_definition (Run.matcher_token v)
+                            )
+                        | Alt (2, v) ->
+                            `Class_defi (
+                              trans_class_definition (Run.matcher_token v)
+                            )
+                        | Alt (3, v) ->
+                            `Import_decl (
+                              trans_import_declaration (Run.matcher_token v)
+                            )
+                        | Alt (4, v) ->
+                            `Export_decl (
+                              trans_export_declaration (Run.matcher_token v)
+                            )
+                        | Alt (5, v) ->
+                            `Obj_defi (
+                              trans_object_definition (Run.matcher_token v)
+                            )
+                        | Alt (6, v) ->
+                            `Enum_defi (
+                              trans_enum_definition (Run.matcher_token v)
+                            )
+                        | Alt (7, v) ->
+                            `Trait_defi (
+                              trans_trait_definition (Run.matcher_token v)
+                            )
+                        | Alt (8, v) ->
+                            `Val_defi (
+                              trans_val_definition (Run.matcher_token v)
+                            )
+                        | Alt (9, v) ->
+                            `Val_decl (
+                              trans_val_declaration (Run.matcher_token v)
+                            )
+                        | Alt (10, v) ->
+                            `Var_defi (
+                              trans_var_definition (Run.matcher_token v)
+                            )
+                        | Alt (11, v) ->
+                            `Var_decl (
+                              trans_var_declaration (Run.matcher_token v)
+                            )
+                        | Alt (12, v) ->
+                            `Type_defi (
+                              trans_type_definition (Run.matcher_token v)
+                            )
+                        | Alt (13, v) ->
+                            `Func_defi (
+                              trans_function_definition (Run.matcher_token v)
+                            )
+                        | Alt (14, v) ->
+                            `Func_decl (
+                              trans_function_declaration (Run.matcher_token v)
+                            )
+                        | Alt (15, v) ->
+                            `Pack_clause (
+                              trans_package_clause (Run.matcher_token v)
+                            )
+                        | Alt (16, v) ->
+                            `Pack_obj (
+                              trans_package_object (Run.matcher_token v)
+                            )
+                        | _ -> assert false
+                        )
                       )
                   | Alt (1, v) ->
-                      `Exte_defi (
-                        trans_extension_definition (Run.matcher_token v)
-                      )
-                  | Alt (2, v) ->
-                      `Class_defi (
-                        trans_class_definition (Run.matcher_token v)
-                      )
-                  | Alt (3, v) ->
-                      `Import_decl (
-                        trans_import_declaration (Run.matcher_token v)
-                      )
-                  | Alt (4, v) ->
-                      `Export_decl (
-                        trans_export_declaration (Run.matcher_token v)
-                      )
-                  | Alt (5, v) ->
-                      `Obj_defi (
-                        trans_object_definition (Run.matcher_token v)
-                      )
-                  | Alt (6, v) ->
-                      `Enum_defi (
-                        trans_enum_definition (Run.matcher_token v)
-                      )
-                  | Alt (7, v) ->
-                      `Trait_defi (
-                        trans_trait_definition (Run.matcher_token v)
-                      )
-                  | Alt (8, v) ->
-                      `Val_defi (
-                        trans_val_definition (Run.matcher_token v)
-                      )
-                  | Alt (9, v) ->
-                      `Val_decl (
-                        trans_val_declaration (Run.matcher_token v)
-                      )
-                  | Alt (10, v) ->
-                      `Var_defi (
-                        trans_var_definition (Run.matcher_token v)
-                      )
-                  | Alt (11, v) ->
-                      `Var_decl (
-                        trans_var_declaration (Run.matcher_token v)
-                      )
-                  | Alt (12, v) ->
-                      `Type_defi (
-                        trans_type_definition (Run.matcher_token v)
-                      )
-                  | Alt (13, v) ->
-                      `Func_defi (
-                        trans_function_definition (Run.matcher_token v)
-                      )
-                  | Alt (14, v) ->
-                      `Func_decl (
-                        trans_function_declaration (Run.matcher_token v)
-                      )
-                  | Alt (15, v) ->
-                      `Pack_clause (
-                        trans_package_clause (Run.matcher_token v)
-                      )
-                  | Alt (16, v) ->
-                      `Pack_obj (
-                        trans_package_object (Run.matcher_token v)
+                      `Semg_val_or_var_defi (
+                        trans_semgrep_val_or_var_definition (Run.matcher_token v)
                       )
                   | _ -> assert false
                   )
@@ -4996,75 +5079,85 @@ and trans_block ((kind, body) : mt) : CST.block =
                             trans_expression (Run.matcher_token v)
                           )
                       | Alt (1, v) ->
-                          `Choice_given_defi (
+                          `Choice_choice_given_defi (
                             (match v with
                             | Alt (0, v) ->
-                                `Given_defi (
-                                  trans_given_definition (Run.matcher_token v)
+                                `Choice_given_defi (
+                                  (match v with
+                                  | Alt (0, v) ->
+                                      `Given_defi (
+                                        trans_given_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (1, v) ->
+                                      `Exte_defi (
+                                        trans_extension_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (2, v) ->
+                                      `Class_defi (
+                                        trans_class_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (3, v) ->
+                                      `Import_decl (
+                                        trans_import_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (4, v) ->
+                                      `Export_decl (
+                                        trans_export_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (5, v) ->
+                                      `Obj_defi (
+                                        trans_object_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (6, v) ->
+                                      `Enum_defi (
+                                        trans_enum_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (7, v) ->
+                                      `Trait_defi (
+                                        trans_trait_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (8, v) ->
+                                      `Val_defi (
+                                        trans_val_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (9, v) ->
+                                      `Val_decl (
+                                        trans_val_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (10, v) ->
+                                      `Var_defi (
+                                        trans_var_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (11, v) ->
+                                      `Var_decl (
+                                        trans_var_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (12, v) ->
+                                      `Type_defi (
+                                        trans_type_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (13, v) ->
+                                      `Func_defi (
+                                        trans_function_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (14, v) ->
+                                      `Func_decl (
+                                        trans_function_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (15, v) ->
+                                      `Pack_clause (
+                                        trans_package_clause (Run.matcher_token v)
+                                      )
+                                  | Alt (16, v) ->
+                                      `Pack_obj (
+                                        trans_package_object (Run.matcher_token v)
+                                      )
+                                  | _ -> assert false
+                                  )
                                 )
                             | Alt (1, v) ->
-                                `Exte_defi (
-                                  trans_extension_definition (Run.matcher_token v)
-                                )
-                            | Alt (2, v) ->
-                                `Class_defi (
-                                  trans_class_definition (Run.matcher_token v)
-                                )
-                            | Alt (3, v) ->
-                                `Import_decl (
-                                  trans_import_declaration (Run.matcher_token v)
-                                )
-                            | Alt (4, v) ->
-                                `Export_decl (
-                                  trans_export_declaration (Run.matcher_token v)
-                                )
-                            | Alt (5, v) ->
-                                `Obj_defi (
-                                  trans_object_definition (Run.matcher_token v)
-                                )
-                            | Alt (6, v) ->
-                                `Enum_defi (
-                                  trans_enum_definition (Run.matcher_token v)
-                                )
-                            | Alt (7, v) ->
-                                `Trait_defi (
-                                  trans_trait_definition (Run.matcher_token v)
-                                )
-                            | Alt (8, v) ->
-                                `Val_defi (
-                                  trans_val_definition (Run.matcher_token v)
-                                )
-                            | Alt (9, v) ->
-                                `Val_decl (
-                                  trans_val_declaration (Run.matcher_token v)
-                                )
-                            | Alt (10, v) ->
-                                `Var_defi (
-                                  trans_var_definition (Run.matcher_token v)
-                                )
-                            | Alt (11, v) ->
-                                `Var_decl (
-                                  trans_var_declaration (Run.matcher_token v)
-                                )
-                            | Alt (12, v) ->
-                                `Type_defi (
-                                  trans_type_definition (Run.matcher_token v)
-                                )
-                            | Alt (13, v) ->
-                                `Func_defi (
-                                  trans_function_definition (Run.matcher_token v)
-                                )
-                            | Alt (14, v) ->
-                                `Func_decl (
-                                  trans_function_declaration (Run.matcher_token v)
-                                )
-                            | Alt (15, v) ->
-                                `Pack_clause (
-                                  trans_package_clause (Run.matcher_token v)
-                                )
-                            | Alt (16, v) ->
-                                `Pack_obj (
-                                  trans_package_object (Run.matcher_token v)
+                                `Semg_val_or_var_defi (
+                                  trans_semgrep_val_or_var_definition (Run.matcher_token v)
                                 )
                             | _ -> assert false
                             )
@@ -6502,75 +6595,85 @@ and trans_enum_block ((kind, body) : mt) : CST.enum_block =
                   trans_expression (Run.matcher_token v)
                 )
             | Alt (2, v) ->
-                `Choice_given_defi (
+                `Choice_choice_given_defi (
                   (match v with
                   | Alt (0, v) ->
-                      `Given_defi (
-                        trans_given_definition (Run.matcher_token v)
+                      `Choice_given_defi (
+                        (match v with
+                        | Alt (0, v) ->
+                            `Given_defi (
+                              trans_given_definition (Run.matcher_token v)
+                            )
+                        | Alt (1, v) ->
+                            `Exte_defi (
+                              trans_extension_definition (Run.matcher_token v)
+                            )
+                        | Alt (2, v) ->
+                            `Class_defi (
+                              trans_class_definition (Run.matcher_token v)
+                            )
+                        | Alt (3, v) ->
+                            `Import_decl (
+                              trans_import_declaration (Run.matcher_token v)
+                            )
+                        | Alt (4, v) ->
+                            `Export_decl (
+                              trans_export_declaration (Run.matcher_token v)
+                            )
+                        | Alt (5, v) ->
+                            `Obj_defi (
+                              trans_object_definition (Run.matcher_token v)
+                            )
+                        | Alt (6, v) ->
+                            `Enum_defi (
+                              trans_enum_definition (Run.matcher_token v)
+                            )
+                        | Alt (7, v) ->
+                            `Trait_defi (
+                              trans_trait_definition (Run.matcher_token v)
+                            )
+                        | Alt (8, v) ->
+                            `Val_defi (
+                              trans_val_definition (Run.matcher_token v)
+                            )
+                        | Alt (9, v) ->
+                            `Val_decl (
+                              trans_val_declaration (Run.matcher_token v)
+                            )
+                        | Alt (10, v) ->
+                            `Var_defi (
+                              trans_var_definition (Run.matcher_token v)
+                            )
+                        | Alt (11, v) ->
+                            `Var_decl (
+                              trans_var_declaration (Run.matcher_token v)
+                            )
+                        | Alt (12, v) ->
+                            `Type_defi (
+                              trans_type_definition (Run.matcher_token v)
+                            )
+                        | Alt (13, v) ->
+                            `Func_defi (
+                              trans_function_definition (Run.matcher_token v)
+                            )
+                        | Alt (14, v) ->
+                            `Func_decl (
+                              trans_function_declaration (Run.matcher_token v)
+                            )
+                        | Alt (15, v) ->
+                            `Pack_clause (
+                              trans_package_clause (Run.matcher_token v)
+                            )
+                        | Alt (16, v) ->
+                            `Pack_obj (
+                              trans_package_object (Run.matcher_token v)
+                            )
+                        | _ -> assert false
+                        )
                       )
                   | Alt (1, v) ->
-                      `Exte_defi (
-                        trans_extension_definition (Run.matcher_token v)
-                      )
-                  | Alt (2, v) ->
-                      `Class_defi (
-                        trans_class_definition (Run.matcher_token v)
-                      )
-                  | Alt (3, v) ->
-                      `Import_decl (
-                        trans_import_declaration (Run.matcher_token v)
-                      )
-                  | Alt (4, v) ->
-                      `Export_decl (
-                        trans_export_declaration (Run.matcher_token v)
-                      )
-                  | Alt (5, v) ->
-                      `Obj_defi (
-                        trans_object_definition (Run.matcher_token v)
-                      )
-                  | Alt (6, v) ->
-                      `Enum_defi (
-                        trans_enum_definition (Run.matcher_token v)
-                      )
-                  | Alt (7, v) ->
-                      `Trait_defi (
-                        trans_trait_definition (Run.matcher_token v)
-                      )
-                  | Alt (8, v) ->
-                      `Val_defi (
-                        trans_val_definition (Run.matcher_token v)
-                      )
-                  | Alt (9, v) ->
-                      `Val_decl (
-                        trans_val_declaration (Run.matcher_token v)
-                      )
-                  | Alt (10, v) ->
-                      `Var_defi (
-                        trans_var_definition (Run.matcher_token v)
-                      )
-                  | Alt (11, v) ->
-                      `Var_decl (
-                        trans_var_declaration (Run.matcher_token v)
-                      )
-                  | Alt (12, v) ->
-                      `Type_defi (
-                        trans_type_definition (Run.matcher_token v)
-                      )
-                  | Alt (13, v) ->
-                      `Func_defi (
-                        trans_function_definition (Run.matcher_token v)
-                      )
-                  | Alt (14, v) ->
-                      `Func_decl (
-                        trans_function_declaration (Run.matcher_token v)
-                      )
-                  | Alt (15, v) ->
-                      `Pack_clause (
-                        trans_package_clause (Run.matcher_token v)
-                      )
-                  | Alt (16, v) ->
-                      `Pack_obj (
-                        trans_package_object (Run.matcher_token v)
+                      `Semg_val_or_var_defi (
+                        trans_semgrep_val_or_var_definition (Run.matcher_token v)
                       )
                   | _ -> assert false
                   )
@@ -6605,75 +6708,85 @@ and trans_enum_block ((kind, body) : mt) : CST.enum_block =
                             trans_expression (Run.matcher_token v)
                           )
                       | Alt (2, v) ->
-                          `Choice_given_defi (
+                          `Choice_choice_given_defi (
                             (match v with
                             | Alt (0, v) ->
-                                `Given_defi (
-                                  trans_given_definition (Run.matcher_token v)
+                                `Choice_given_defi (
+                                  (match v with
+                                  | Alt (0, v) ->
+                                      `Given_defi (
+                                        trans_given_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (1, v) ->
+                                      `Exte_defi (
+                                        trans_extension_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (2, v) ->
+                                      `Class_defi (
+                                        trans_class_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (3, v) ->
+                                      `Import_decl (
+                                        trans_import_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (4, v) ->
+                                      `Export_decl (
+                                        trans_export_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (5, v) ->
+                                      `Obj_defi (
+                                        trans_object_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (6, v) ->
+                                      `Enum_defi (
+                                        trans_enum_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (7, v) ->
+                                      `Trait_defi (
+                                        trans_trait_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (8, v) ->
+                                      `Val_defi (
+                                        trans_val_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (9, v) ->
+                                      `Val_decl (
+                                        trans_val_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (10, v) ->
+                                      `Var_defi (
+                                        trans_var_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (11, v) ->
+                                      `Var_decl (
+                                        trans_var_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (12, v) ->
+                                      `Type_defi (
+                                        trans_type_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (13, v) ->
+                                      `Func_defi (
+                                        trans_function_definition (Run.matcher_token v)
+                                      )
+                                  | Alt (14, v) ->
+                                      `Func_decl (
+                                        trans_function_declaration (Run.matcher_token v)
+                                      )
+                                  | Alt (15, v) ->
+                                      `Pack_clause (
+                                        trans_package_clause (Run.matcher_token v)
+                                      )
+                                  | Alt (16, v) ->
+                                      `Pack_obj (
+                                        trans_package_object (Run.matcher_token v)
+                                      )
+                                  | _ -> assert false
+                                  )
                                 )
                             | Alt (1, v) ->
-                                `Exte_defi (
-                                  trans_extension_definition (Run.matcher_token v)
-                                )
-                            | Alt (2, v) ->
-                                `Class_defi (
-                                  trans_class_definition (Run.matcher_token v)
-                                )
-                            | Alt (3, v) ->
-                                `Import_decl (
-                                  trans_import_declaration (Run.matcher_token v)
-                                )
-                            | Alt (4, v) ->
-                                `Export_decl (
-                                  trans_export_declaration (Run.matcher_token v)
-                                )
-                            | Alt (5, v) ->
-                                `Obj_defi (
-                                  trans_object_definition (Run.matcher_token v)
-                                )
-                            | Alt (6, v) ->
-                                `Enum_defi (
-                                  trans_enum_definition (Run.matcher_token v)
-                                )
-                            | Alt (7, v) ->
-                                `Trait_defi (
-                                  trans_trait_definition (Run.matcher_token v)
-                                )
-                            | Alt (8, v) ->
-                                `Val_defi (
-                                  trans_val_definition (Run.matcher_token v)
-                                )
-                            | Alt (9, v) ->
-                                `Val_decl (
-                                  trans_val_declaration (Run.matcher_token v)
-                                )
-                            | Alt (10, v) ->
-                                `Var_defi (
-                                  trans_var_definition (Run.matcher_token v)
-                                )
-                            | Alt (11, v) ->
-                                `Var_decl (
-                                  trans_var_declaration (Run.matcher_token v)
-                                )
-                            | Alt (12, v) ->
-                                `Type_defi (
-                                  trans_type_definition (Run.matcher_token v)
-                                )
-                            | Alt (13, v) ->
-                                `Func_defi (
-                                  trans_function_definition (Run.matcher_token v)
-                                )
-                            | Alt (14, v) ->
-                                `Func_decl (
-                                  trans_function_declaration (Run.matcher_token v)
-                                )
-                            | Alt (15, v) ->
-                                `Pack_clause (
-                                  trans_package_clause (Run.matcher_token v)
-                                )
-                            | Alt (16, v) ->
-                                `Pack_obj (
-                                  trans_package_object (Run.matcher_token v)
+                                `Semg_val_or_var_defi (
+                                  trans_semgrep_val_or_var_definition (Run.matcher_token v)
                                 )
                             | _ -> assert false
                             )
@@ -8481,14 +8594,11 @@ and trans_lambda_expression ((kind, body) : mt) : CST.lambda_expression =
                   trans_bindings (Run.matcher_token v)
                 )
             | Alt (1, v) ->
-                `Opt_impl_choice_id (
+                `Impl_choice_id_opt_COLON_choice_type (
                   (match v with
-                  | Seq [v0; v1] ->
+                  | Seq [v0; v1; v2] ->
                       (
-                        Run.opt
-                          (fun v -> Run.trans_token (Run.matcher_token v))
-                          v0
-                        ,
+                        Run.trans_token (Run.matcher_token v0),
                         (match v1 with
                         | Alt (0, v) ->
                             `Id (
@@ -8500,11 +8610,52 @@ and trans_lambda_expression ((kind, body) : mt) : CST.lambda_expression =
                             )
                         | _ -> assert false
                         )
+                        ,
+                        Run.opt
+                          (fun v ->
+                            (match v with
+                            | Seq [v0; v1] ->
+                                (
+                                  Run.trans_token (Run.matcher_token v0),
+                                  (match v1 with
+                                  | Alt (0, v) ->
+                                      `Type (
+                                        trans_type_ (Run.matcher_token v)
+                                      )
+                                  | Alt (1, v) ->
+                                      `Lazy_param_type (
+                                        trans_lazy_parameter_type (Run.matcher_token v)
+                                      )
+                                  | Alt (2, v) ->
+                                      `Repe_param_type (
+                                        trans_repeated_parameter_type (Run.matcher_token v)
+                                      )
+                                  | _ -> assert false
+                                  )
+                                )
+                            | _ -> assert false
+                            )
+                          )
+                          v2
                       )
                   | _ -> assert false
                   )
                 )
             | Alt (2, v) ->
+                `Choice_id (
+                  (match v with
+                  | Alt (0, v) ->
+                      `Id (
+                        trans_identifier (Run.matcher_token v)
+                      )
+                  | Alt (1, v) ->
+                      `Op_id (
+                        trans_operator_identifier (Run.matcher_token v)
+                      )
+                  | _ -> assert false
+                  )
+                )
+            | Alt (3, v) ->
                 `Wild (
                   trans_wildcard (Run.matcher_token v)
                 )
@@ -9742,6 +9893,137 @@ and trans_self_type_ascription ((kind, body) : mt) : CST.self_type_ascription =
           (
             Run.trans_token (Run.matcher_token v0),
             trans_type_ (Run.matcher_token v1)
+          )
+      | _ -> assert false
+      )
+  | Leaf _ -> assert false
+
+and trans_semgrep_val_or_var_definition ((kind, body) : mt) : CST.semgrep_val_or_var_definition =
+  match body with
+  | Children v ->
+      (match v with
+      | Seq [v0; v1; v2; v3; v4] ->
+          (
+            trans_semgrep_metavariable (Run.matcher_token v0),
+            (match v1 with
+            | Alt (0, v) ->
+                `Choice_choice_choice_id (
+                  (match v with
+                  | Alt (0, v) ->
+                      `Choice_choice_id (
+                        (match v with
+                        | Alt (0, v) ->
+                            `Choice_id (
+                              (match v with
+                              | Alt (0, v) ->
+                                  `Id (
+                                    trans_identifier (Run.matcher_token v)
+                                  )
+                              | Alt (1, v) ->
+                                  `Op_id (
+                                    trans_operator_identifier (Run.matcher_token v)
+                                  )
+                              | _ -> assert false
+                              )
+                            )
+                        | Alt (1, v) ->
+                            `Stable_id (
+                              trans_stable_identifier (Run.matcher_token v)
+                            )
+                        | Alt (2, v) ->
+                            `Inte_str_exp (
+                              trans_interpolated_string_expression (Run.matcher_token v)
+                            )
+                        | Alt (3, v) ->
+                            `Capt_pat (
+                              trans_capture_pattern (Run.matcher_token v)
+                            )
+                        | Alt (4, v) ->
+                            `Tuple_pat (
+                              trans_tuple_pattern (Run.matcher_token v)
+                            )
+                        | Alt (5, v) ->
+                            `Named_tuple_pat (
+                              trans_named_tuple_pattern (Run.matcher_token v)
+                            )
+                        | Alt (6, v) ->
+                            `Case_class_pat (
+                              trans_case_class_pattern (Run.matcher_token v)
+                            )
+                        | Alt (7, v) ->
+                            `Infix_pat (
+                              trans_infix_pattern (Run.matcher_token v)
+                            )
+                        | Alt (8, v) ->
+                            `Alt_pat (
+                              trans_alternative_pattern (Run.matcher_token v)
+                            )
+                        | Alt (9, v) ->
+                            `Typed_pat (
+                              trans_typed_pattern (Run.matcher_token v)
+                            )
+                        | Alt (10, v) ->
+                            `Given_pat (
+                              trans_given_pattern (Run.matcher_token v)
+                            )
+                        | Alt (11, v) ->
+                            `Quote_exp (
+                              trans_quote_expression (Run.matcher_token v)
+                            )
+                        | Alt (12, v) ->
+                            `Choice_non_null_lit (
+                              (match v with
+                              | Alt (0, v) ->
+                                  `Non_null_lit (
+                                    trans_non_null_literal (Run.matcher_token v)
+                                  )
+                              | Alt (1, v) ->
+                                  `Null_lit (
+                                    trans_null_literal (Run.matcher_token v)
+                                  )
+                              | _ -> assert false
+                              )
+                            )
+                        | Alt (13, v) ->
+                            `Wild (
+                              trans_wildcard (Run.matcher_token v)
+                            )
+                        | Alt (14, v) ->
+                            `Repeat_pat (
+                              trans_repeat_pattern (Run.matcher_token v)
+                            )
+                        | _ -> assert false
+                        )
+                      )
+                  | Alt (1, v) ->
+                      `Semg_ellips (
+                        trans_semgrep_ellipsis (Run.matcher_token v)
+                      )
+                  | _ -> assert false
+                  )
+                )
+            | Alt (1, v) ->
+                `Idents (
+                  trans_identifiers (Run.matcher_token v)
+                )
+            | _ -> assert false
+            )
+            ,
+            Run.opt
+              (fun v ->
+                (match v with
+                | Seq [v0; v1] ->
+                    (
+                      Run.trans_token (Run.matcher_token v0),
+                      trans_type_ (Run.matcher_token v1)
+                    )
+                | _ -> assert false
+                )
+              )
+              v2
+            ,
+            Run.trans_token (Run.matcher_token v3),
+            trans_indentable_expression (Run.matcher_token v4)
           )
       | _ -> assert false
       )
@@ -11400,75 +11682,85 @@ let trans_semgrep_statement ((kind, body) : mt) : CST.semgrep_statement =
                   trans_expression (Run.matcher_token v)
                 )
             | Alt (1, v) ->
-                `Choice_given_defi (
+                `Choice_choice_given_defi (
                   (match v with
                   | Alt (0, v) ->
-                      `Given_defi (
-                        trans_given_definition (Run.matcher_token v)
+                      `Choice_given_defi (
+                        (match v with
+                        | Alt (0, v) ->
+                            `Given_defi (
+                              trans_given_definition (Run.matcher_token v)
+                            )
+                        | Alt (1, v) ->
+                            `Exte_defi (
+                              trans_extension_definition (Run.matcher_token v)
+                            )
+                        | Alt (2, v) ->
+                            `Class_defi (
+                              trans_class_definition (Run.matcher_token v)
+                            )
+                        | Alt (3, v) ->
+                            `Import_decl (
+                              trans_import_declaration (Run.matcher_token v)
+                            )
+                        | Alt (4, v) ->
+                            `Export_decl (
+                              trans_export_declaration (Run.matcher_token v)
+                            )
+                        | Alt (5, v) ->
+                            `Obj_defi (
+                              trans_object_definition (Run.matcher_token v)
+                            )
+                        | Alt (6, v) ->
+                            `Enum_defi (
+                              trans_enum_definition (Run.matcher_token v)
+                            )
+                        | Alt (7, v) ->
+                            `Trait_defi (
+                              trans_trait_definition (Run.matcher_token v)
+                            )
+                        | Alt (8, v) ->
+                            `Val_defi (
+                              trans_val_definition (Run.matcher_token v)
+                            )
+                        | Alt (9, v) ->
+                            `Val_decl (
+                              trans_val_declaration (Run.matcher_token v)
+                            )
+                        | Alt (10, v) ->
+                            `Var_defi (
+                              trans_var_definition (Run.matcher_token v)
+                            )
+                        | Alt (11, v) ->
+                            `Var_decl (
+                              trans_var_declaration (Run.matcher_token v)
+                            )
+                        | Alt (12, v) ->
+                            `Type_defi (
+                              trans_type_definition (Run.matcher_token v)
+                            )
+                        | Alt (13, v) ->
+                            `Func_defi (
+                              trans_function_definition (Run.matcher_token v)
+                            )
+                        | Alt (14, v) ->
+                            `Func_decl (
+                              trans_function_declaration (Run.matcher_token v)
+                            )
+                        | Alt (15, v) ->
+                            `Pack_clause (
+                              trans_package_clause (Run.matcher_token v)
+                            )
+                        | Alt (16, v) ->
+                            `Pack_obj (
+                              trans_package_object (Run.matcher_token v)
+                            )
+                        | _ -> assert false
+                        )
                       )
                   | Alt (1, v) ->
-                      `Exte_defi (
-                        trans_extension_definition (Run.matcher_token v)
-                      )
-                  | Alt (2, v) ->
-                      `Class_defi (
-                        trans_class_definition (Run.matcher_token v)
-                      )
-                  | Alt (3, v) ->
-                      `Import_decl (
-                        trans_import_declaration (Run.matcher_token v)
-                      )
-                  | Alt (4, v) ->
-                      `Export_decl (
-                        trans_export_declaration (Run.matcher_token v)
-                      )
-                  | Alt (5, v) ->
-                      `Obj_defi (
-                        trans_object_definition (Run.matcher_token v)
-                      )
-                  | Alt (6, v) ->
-                      `Enum_defi (
-                        trans_enum_definition (Run.matcher_token v)
-                      )
-                  | Alt (7, v) ->
-                      `Trait_defi (
-                        trans_trait_definition (Run.matcher_token v)
-                      )
-                  | Alt (8, v) ->
-                      `Val_defi (
-                        trans_val_definition (Run.matcher_token v)
-                      )
-                  | Alt (9, v) ->
-                      `Val_decl (
-                        trans_val_declaration (Run.matcher_token v)
-                      )
-                  | Alt (10, v) ->
-                      `Var_defi (
-                        trans_var_definition (Run.matcher_token v)
-                      )
-                  | Alt (11, v) ->
-                      `Var_decl (
-                        trans_var_declaration (Run.matcher_token v)
-                      )
-                  | Alt (12, v) ->
-                      `Type_defi (
-                        trans_type_definition (Run.matcher_token v)
-                      )
-                  | Alt (13, v) ->
-                      `Func_defi (
-                        trans_function_definition (Run.matcher_token v)
-                      )
-                  | Alt (14, v) ->
-                      `Func_decl (
-                        trans_function_declaration (Run.matcher_token v)
-                      )
-                  | Alt (15, v) ->
-                      `Pack_clause (
-                        trans_package_clause (Run.matcher_token v)
-                      )
-                  | Alt (16, v) ->
-                      `Pack_obj (
-                        trans_package_object (Run.matcher_token v)
+                      `Semg_val_or_var_defi (
+                        trans_semgrep_val_or_var_definition (Run.matcher_token v)
                       )
                   | _ -> assert false
                   )
@@ -11498,78 +11790,88 @@ let trans_top_level_definition ((kind, body) : mt) : CST.top_level_definition =
             trans_semgrep_member_decl (Run.matcher_token v)
           )
       | Alt (3, v) ->
-          `Choice_choice_given_defi (
+          `Choice_choice_choice_given_defi (
             (match v with
             | Alt (0, v) ->
-                `Choice_given_defi (
+                `Choice_choice_given_defi (
                   (match v with
                   | Alt (0, v) ->
-                      `Given_defi (
-                        trans_given_definition (Run.matcher_token v)
+                      `Choice_given_defi (
+                        (match v with
+                        | Alt (0, v) ->
+                            `Given_defi (
+                              trans_given_definition (Run.matcher_token v)
+                            )
+                        | Alt (1, v) ->
+                            `Exte_defi (
+                              trans_extension_definition (Run.matcher_token v)
+                            )
+                        | Alt (2, v) ->
+                            `Class_defi (
+                              trans_class_definition (Run.matcher_token v)
+                            )
+                        | Alt (3, v) ->
+                            `Import_decl (
+                              trans_import_declaration (Run.matcher_token v)
+                            )
+                        | Alt (4, v) ->
+                            `Export_decl (
+                              trans_export_declaration (Run.matcher_token v)
+                            )
+                        | Alt (5, v) ->
+                            `Obj_defi (
+                              trans_object_definition (Run.matcher_token v)
+                            )
+                        | Alt (6, v) ->
+                            `Enum_defi (
+                              trans_enum_definition (Run.matcher_token v)
+                            )
+                        | Alt (7, v) ->
+                            `Trait_defi (
+                              trans_trait_definition (Run.matcher_token v)
+                            )
+                        | Alt (8, v) ->
+                            `Val_defi (
+                              trans_val_definition (Run.matcher_token v)
+                            )
+                        | Alt (9, v) ->
+                            `Val_decl (
+                              trans_val_declaration (Run.matcher_token v)
+                            )
+                        | Alt (10, v) ->
+                            `Var_defi (
+                              trans_var_definition (Run.matcher_token v)
+                            )
+                        | Alt (11, v) ->
+                            `Var_decl (
+                              trans_var_declaration (Run.matcher_token v)
+                            )
+                        | Alt (12, v) ->
+                            `Type_defi (
+                              trans_type_definition (Run.matcher_token v)
+                            )
+                        | Alt (13, v) ->
+                            `Func_defi (
+                              trans_function_definition (Run.matcher_token v)
+                            )
+                        | Alt (14, v) ->
+                            `Func_decl (
+                              trans_function_declaration (Run.matcher_token v)
+                            )
+                        | Alt (15, v) ->
+                            `Pack_clause (
+                              trans_package_clause (Run.matcher_token v)
+                            )
+                        | Alt (16, v) ->
+                            `Pack_obj (
+                              trans_package_object (Run.matcher_token v)
+                            )
+                        | _ -> assert false
+                        )
                       )
                   | Alt (1, v) ->
-                      `Exte_defi (
-                        trans_extension_definition (Run.matcher_token v)
-                      )
-                  | Alt (2, v) ->
-                      `Class_defi (
-                        trans_class_definition (Run.matcher_token v)
-                      )
-                  | Alt (3, v) ->
-                      `Import_decl (
-                        trans_import_declaration (Run.matcher_token v)
-                      )
-                  | Alt (4, v) ->
-                      `Export_decl (
-                        trans_export_declaration (Run.matcher_token v)
-                      )
-                  | Alt (5, v) ->
-                      `Obj_defi (
-                        trans_object_definition (Run.matcher_token v)
-                      )
-                  | Alt (6, v) ->
-                      `Enum_defi (
-                        trans_enum_definition (Run.matcher_token v)
-                      )
-                  | Alt (7, v) ->
-                      `Trait_defi (
-                        trans_trait_definition (Run.matcher_token v)
-                      )
-                  | Alt (8, v) ->
-                      `Val_defi (
-                        trans_val_definition (Run.matcher_token v)
-                      )
-                  | Alt (9, v) ->
-                      `Val_decl (
-                        trans_val_declaration (Run.matcher_token v)
-                      )
-                  | Alt (10, v) ->
-                      `Var_defi (
-                        trans_var_definition (Run.matcher_token v)
-                      )
-                  | Alt (11, v) ->
-                      `Var_decl (
-                        trans_var_declaration (Run.matcher_token v)
-                      )
-                  | Alt (12, v) ->
-                      `Type_defi (
-                        trans_type_definition (Run.matcher_token v)
-                      )
-                  | Alt (13, v) ->
-                      `Func_defi (
-                        trans_function_definition (Run.matcher_token v)
-                      )
-                  | Alt (14, v) ->
-                      `Func_decl (
-                        trans_function_declaration (Run.matcher_token v)
-                      )
-                  | Alt (15, v) ->
-                      `Pack_clause (
-                        trans_package_clause (Run.matcher_token v)
-                      )
-                  | Alt (16, v) ->
-                      `Pack_obj (
-                        trans_package_object (Run.matcher_token v)
+                      `Semg_val_or_var_defi (
+                        trans_semgrep_val_or_var_definition (Run.matcher_token v)
                       )
                   | _ -> assert false
                   )

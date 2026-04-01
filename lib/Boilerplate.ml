@@ -537,7 +537,7 @@ and map_anon_choice_dollar_esc_fba2882 (env : env) (x : CST.anon_choice_dollar_e
     )
   )
 
-and map_anon_choice_enum_case_defins_6a7e2ee (env : env) (x : CST.anon_choice_enum_case_defins_6a7e2ee) =
+and map_anon_choice_enum_case_defins_b7955e9 (env : env) (x : CST.anon_choice_enum_case_defins_b7955e9) =
   (match x with
   | `Enum_case_defins (v1, v2, v3) -> R.Case ("Enum_case_defins",
       let v1 = R.List (List.map (map_annotation env) v1) in
@@ -565,17 +565,17 @@ and map_anon_choice_enum_case_defins_6a7e2ee (env : env) (x : CST.anon_choice_en
   | `Exp x -> R.Case ("Exp",
       map_expression env x
     )
-  | `Choice_given_defi x -> R.Case ("Choice_given_defi",
+  | `Choice_choice_given_defi x -> R.Case ("Choice_choice_given_defi",
       map_definition env x
     )
   )
 
-and map_anon_choice_exp_569cb0e (env : env) (x : CST.anon_choice_exp_569cb0e) =
+and map_anon_choice_exp_5763a53 (env : env) (x : CST.anon_choice_exp_5763a53) =
   (match x with
   | `Exp x -> R.Case ("Exp",
       map_expression env x
     )
-  | `Choice_given_defi x -> R.Case ("Choice_given_defi",
+  | `Choice_choice_given_defi x -> R.Case ("Choice_choice_given_defi",
       map_definition env x
     )
   | `End_marker x -> R.Case ("End_marker",
@@ -746,11 +746,11 @@ and map_bindings (env : env) ((v1, v2, v3) : CST.bindings) =
   R.Tuple [v1; v2; v3]
 
 and map_block (env : env) ((v1, v2, v3) : CST.block) =
-  let v1 = map_anon_choice_exp_569cb0e env v1 in
+  let v1 = map_anon_choice_exp_5763a53 env v1 in
   let v2 =
     R.List (List.map (fun (v1, v2) ->
       let v1 = map_semicolon env v1 in
-      let v2 = map_anon_choice_exp_569cb0e env v2 in
+      let v2 = map_anon_choice_exp_5763a53 env v2 in
       R.Tuple [v1; v2]
     ) v2)
   in
@@ -999,6 +999,26 @@ and map_class_constructor (env : env) ((v1, v2, v3, v4, v5) : CST.class_construc
       R.Tuple [v1; v2]
     ) v5)
   in
+  R.Tuple [v1; v2; v3; v4; v5]
+
+and map_class_definition (env : env) ((v1, v2, v3, v4, v5) : CST.class_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_modifiers env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 =
+    (match v3 with
+    | Some tok -> R.Option (Some (
+        (* "case" *) token env tok
+      ))
+    | None -> R.Option None)
+  in
+  let v4 = (* "class" *) token env v4 in
+  let v5 = map_class_definition_ env v5 in
   R.Tuple [v1; v2; v3; v4; v5]
 
 and map_class_definition_ (env : env) ((v1, v2, v3, v4) : CST.class_definition_) =
@@ -1302,233 +1322,74 @@ and map_covariant_type_parameter (env : env) ((v1, v2) : CST.covariant_type_para
 
 and map_definition (env : env) (x : CST.definition) =
   (match x with
-  | `Given_defi (v1, v2, v3, v4, v5, v6) -> R.Case ("Given_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_modifiers env x
-          ))
-        | None -> R.Option None)
-      in
-      let v3 = (* "given" *) token env v3 in
-      let v4 =
-        (match v4 with
-        | Some x -> R.Option (Some (
-            map_given_constructor env x
-          ))
-        | None -> R.Option None)
-      in
-      let v5 = R.List (List.map (map_given_sig env) v5) in
-      let v6 =
-        (match v6 with
-        | `Stru_inst x -> R.Case ("Stru_inst",
-            map_structural_instance env x
-          )
-        | `Anno_type_opt_EQ_inde_exp (v1, v2) -> R.Case ("Anno_type_opt_EQ_inde_exp",
-            let v1 = map_annotated_type env v1 in
-            let v2 =
-              (match v2 with
-              | Some (v1, v2) -> R.Option (Some (
-                  let v1 = (* "=" *) token env v1 in
-                  let v2 = map_indentable_expression env v2 in
-                  R.Tuple [v1; v2]
-                ))
-              | None -> R.Option None)
-            in
-            R.Tuple [v1; v2]
-          )
+  | `Choice_given_defi x -> R.Case ("Choice_given_defi",
+      (match x with
+      | `Given_defi x -> R.Case ("Given_defi",
+          map_given_definition env x
         )
-      in
-      R.Tuple [v1; v2; v3; v4; v5; v6]
-    )
-  | `Exte_defi (v1, v2, v3, v4) -> R.Case ("Exte_defi",
-      let v1 = (* "extension" *) token env v1 in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_type_parameters env x
-          ))
-        | None -> R.Option None)
-      in
-      let v3 = R.List (List.map (map_given_conditional env) v3) in
-      let v4 =
-        (match v4 with
-        | `Exte_temp_body x -> R.Case ("Exte_temp_body",
-            map_extension_template_body env x
-          )
-        | `Func_defi x -> R.Case ("Func_defi",
-            map_function_definition env x
-          )
-        | `Func_decl x -> R.Case ("Func_decl",
-            map_function_declaration env x
-          )
+      | `Exte_defi x -> R.Case ("Exte_defi",
+          map_extension_definition env x
         )
-      in
-      R.Tuple [v1; v2; v3; v4]
+      | `Class_defi x -> R.Case ("Class_defi",
+          map_class_definition env x
+        )
+      | `Import_decl x -> R.Case ("Import_decl",
+          map_import_declaration env x
+        )
+      | `Export_decl x -> R.Case ("Export_decl",
+          map_export_declaration env x
+        )
+      | `Obj_defi x -> R.Case ("Obj_defi",
+          map_object_definition env x
+        )
+      | `Enum_defi x -> R.Case ("Enum_defi",
+          map_enum_definition env x
+        )
+      | `Trait_defi x -> R.Case ("Trait_defi",
+          map_trait_definition env x
+        )
+      | `Val_defi x -> R.Case ("Val_defi",
+          map_val_definition env x
+        )
+      | `Val_decl x -> R.Case ("Val_decl",
+          map_val_declaration env x
+        )
+      | `Var_defi x -> R.Case ("Var_defi",
+          map_var_definition env x
+        )
+      | `Var_decl x -> R.Case ("Var_decl",
+          map_var_declaration env x
+        )
+      | `Type_defi x -> R.Case ("Type_defi",
+          map_type_definition env x
+        )
+      | `Func_defi x -> R.Case ("Func_defi",
+          map_function_definition env x
+        )
+      | `Func_decl x -> R.Case ("Func_decl",
+          map_function_declaration env x
+        )
+      | `Pack_clause x -> R.Case ("Pack_clause",
+          map_package_clause env x
+        )
+      | `Pack_obj x -> R.Case ("Pack_obj",
+          map_package_object env x
+        )
+      )
     )
-  | `Class_defi (v1, v2, v3, v4, v5) -> R.Case ("Class_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_modifiers env x
-          ))
-        | None -> R.Option None)
-      in
+  | `Semg_val_or_var_defi (v1, v2, v3, v4, v5) -> R.Case ("Semg_val_or_var_defi",
+      let v1 = (* semgrep_metavariable *) token env v1 in
+      let v2 = map_anon_choice_pat_a6d147b env v2 in
       let v3 =
         (match v3 with
-        | Some tok -> R.Option (Some (
-            (* "case" *) token env tok
+        | Some x -> R.Option (Some (
+            map_self_type_ascription env x
           ))
         | None -> R.Option None)
       in
-      let v4 = (* "class" *) token env v4 in
-      let v5 = map_class_definition_ env v5 in
+      let v4 = (* "=" *) token env v4 in
+      let v5 = map_indentable_expression env v5 in
       R.Tuple [v1; v2; v3; v4; v5]
-    )
-  | `Import_decl (v1, v2, v3) -> R.Case ("Import_decl",
-      let v1 = (* "import" *) token env v1 in
-      let v2 = map_namespace_expression env v2 in
-      let v3 =
-        R.List (List.map (fun (v1, v2) ->
-          let v1 = (* "," *) token env v1 in
-          let v2 = map_namespace_expression env v2 in
-          R.Tuple [v1; v2]
-        ) v3)
-      in
-      R.Tuple [v1; v2; v3]
-    )
-  | `Export_decl (v1, v2, v3) -> R.Case ("Export_decl",
-      let v1 = (* "export" *) token env v1 in
-      let v2 = map_namespace_expression env v2 in
-      let v3 =
-        R.List (List.map (fun (v1, v2) ->
-          let v1 = (* "," *) token env v1 in
-          let v2 = map_namespace_expression env v2 in
-          R.Tuple [v1; v2]
-        ) v3)
-      in
-      R.Tuple [v1; v2; v3]
-    )
-  | `Obj_defi (v1, v2, v3, v4, v5) -> R.Case ("Obj_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_modifiers env x
-          ))
-        | None -> R.Option None)
-      in
-      let v3 =
-        (match v3 with
-        | Some tok -> R.Option (Some (
-            (* "case" *) token env tok
-          ))
-        | None -> R.Option None)
-      in
-      let v4 = (* "object" *) token env v4 in
-      let v5 = map_object_definition_ env v5 in
-      R.Tuple [v1; v2; v3; v4; v5]
-    )
-  | `Enum_defi (v1, v2, v3, v4, v5, v6) -> R.Case ("Enum_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 = (* "enum" *) token env v2 in
-      let v3 = map_class_constructor env v3 in
-      let v4 =
-        (match v4 with
-        | Some x -> R.Option (Some (
-            map_extends_clause env x
-          ))
-        | None -> R.Option None)
-      in
-      let v5 =
-        (match v5 with
-        | Some x -> R.Option (Some (
-            map_derives_clause env x
-          ))
-        | None -> R.Option None)
-      in
-      let v6 = map_enum_body env v6 in
-      R.Tuple [v1; v2; v3; v4; v5; v6]
-    )
-  | `Trait_defi (v1, v2, v3, v4) -> R.Case ("Trait_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_modifiers env x
-          ))
-        | None -> R.Option None)
-      in
-      let v3 = (* "trait" *) token env v3 in
-      let v4 = map_class_definition_ env v4 in
-      R.Tuple [v1; v2; v3; v4]
-    )
-  | `Val_defi x -> R.Case ("Val_defi",
-      map_val_definition env x
-    )
-  | `Val_decl x -> R.Case ("Val_decl",
-      map_val_declaration env x
-    )
-  | `Var_defi x -> R.Case ("Var_defi",
-      map_var_definition env x
-    )
-  | `Var_decl x -> R.Case ("Var_decl",
-      map_var_declaration env x
-    )
-  | `Type_defi (v1, v2, v3, v4, v5, v6) -> R.Case ("Type_defi",
-      let v1 = R.List (List.map (map_annotation env) v1) in
-      let v2 =
-        (match v2 with
-        | Some x -> R.Option (Some (
-            map_modifiers env x
-          ))
-        | None -> R.Option None)
-      in
-      let v3 =
-        (match v3 with
-        | Some tok -> R.Option (Some (
-            (* "opaque" *) token env tok
-          ))
-        | None -> R.Option None)
-      in
-      let v4 = (* "type" *) token env v4 in
-      let v5 = map_type_constructor env v5 in
-      let v6 =
-        (match v6 with
-        | Some (v1, v2) -> R.Option (Some (
-            let v1 = (* "=" *) token env v1 in
-            let v2 = map_type_ env v2 in
-            R.Tuple [v1; v2]
-          ))
-        | None -> R.Option None)
-      in
-      R.Tuple [v1; v2; v3; v4; v5; v6]
-    )
-  | `Func_defi x -> R.Case ("Func_defi",
-      map_function_definition env x
-    )
-  | `Func_decl x -> R.Case ("Func_decl",
-      map_function_declaration env x
-    )
-  | `Pack_clause (v1, v2, v3) -> R.Case ("Pack_clause",
-      let v1 = (* "package" *) token env v1 in
-      let v2 = map_package_identifier env v2 in
-      let v3 =
-        (match v3 with
-        | Some x -> R.Option (Some (
-            map_structural_type env x
-          ))
-        | None -> R.Option None)
-      in
-      R.Tuple [v1; v2; v3]
-    )
-  | `Pack_obj (v1, v2, v3) -> R.Case ("Pack_obj",
-      let v1 = (* "package" *) token env v1 in
-      let v2 = (* "object" *) token env v2 in
-      let v3 = map_object_definition_ env v3 in
-      R.Tuple [v1; v2; v3]
     )
   )
 
@@ -1544,11 +1405,11 @@ and map_definition_body (env : env) ((v1, v2) : CST.definition_body) =
   R.Tuple [v1; v2]
 
 and map_enum_block (env : env) ((v1, v2, v3) : CST.enum_block) =
-  let v1 = map_anon_choice_enum_case_defins_6a7e2ee env v1 in
+  let v1 = map_anon_choice_enum_case_defins_b7955e9 env v1 in
   let v2 =
     R.List (List.map (fun (v1, v2) ->
       let v1 = map_semicolon env v1 in
-      let v2 = map_anon_choice_enum_case_defins_6a7e2ee env v2 in
+      let v2 = map_anon_choice_enum_case_defins_b7955e9 env v2 in
       R.Tuple [v1; v2]
     ) v2)
   in
@@ -1583,6 +1444,27 @@ and map_enum_body (env : env) (x : CST.enum_body) =
       R.Tuple [v1; v2; v3]
     )
   )
+
+and map_enum_definition (env : env) ((v1, v2, v3, v4, v5, v6) : CST.enum_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 = (* "enum" *) token env v2 in
+  let v3 = map_class_constructor env v3 in
+  let v4 =
+    (match v4 with
+    | Some x -> R.Option (Some (
+        map_extends_clause env x
+      ))
+    | None -> R.Option None)
+  in
+  let v5 =
+    (match v5 with
+    | Some x -> R.Option (Some (
+        map_derives_clause env x
+      ))
+    | None -> R.Option None)
+  in
+  let v6 = map_enum_body env v6 in
+  R.Tuple [v1; v2; v3; v4; v5; v6]
 
 and map_enumerator (env : env) (x : CST.enumerator) =
   (match x with
@@ -1668,6 +1550,18 @@ and map_enumerators (env : env) (x : CST.enumerators) =
       R.Tuple [v1; v2; v3; v4; v5]
     )
   )
+
+and map_export_declaration (env : env) ((v1, v2, v3) : CST.export_declaration) =
+  let v1 = (* "export" *) token env v1 in
+  let v2 = map_namespace_expression env v2 in
+  let v3 =
+    R.List (List.map (fun (v1, v2) ->
+      let v1 = (* "," *) token env v1 in
+      let v2 = map_namespace_expression env v2 in
+      R.Tuple [v1; v2]
+    ) v3)
+  in
+  R.Tuple [v1; v2; v3]
 
 and map_expr_case_clause (env : env) ((v1, v2, v3) : CST.expr_case_clause) =
   let v1 = (* "case" *) token env v1 in
@@ -1777,16 +1671,22 @@ and map_expression (env : env) (x : CST.expression) =
         | `Bindis x -> R.Case ("Bindis",
             map_bindings env x
           )
-        | `Opt_impl_choice_id (v1, v2) -> R.Case ("Opt_impl_choice_id",
-            let v1 =
-              (match v1 with
-              | Some tok -> R.Option (Some (
-                  (* "implicit" *) token env tok
+        | `Impl_choice_id_opt_COLON_choice_type (v1, v2, v3) -> R.Case ("Impl_choice_id_opt_COLON_choice_type",
+            let v1 = (* "implicit" *) token env v1 in
+            let v2 = map_type_identifier env v2 in
+            let v3 =
+              (match v3 with
+              | Some (v1, v2) -> R.Option (Some (
+                  let v1 = (* ":" *) token env v1 in
+                  let v2 = map_param_type env v2 in
+                  R.Tuple [v1; v2]
                 ))
               | None -> R.Option None)
             in
-            let v2 = map_type_identifier env v2 in
-            R.Tuple [v1; v2]
+            R.Tuple [v1; v2; v3]
+          )
+        | `Choice_id x -> R.Case ("Choice_id",
+            map_type_identifier env x
           )
         | `Wild tok -> R.Case ("Wild",
             (* "_" *) token env tok
@@ -1889,6 +1789,31 @@ and map_extends_clause (env : env) ((v1, v2, v3) : CST.extends_clause) =
     | None -> R.Option None)
   in
   R.Tuple [v1; v2; v3]
+
+and map_extension_definition (env : env) ((v1, v2, v3, v4) : CST.extension_definition) =
+  let v1 = (* "extension" *) token env v1 in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_type_parameters env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 = R.List (List.map (map_given_conditional env) v3) in
+  let v4 =
+    (match v4 with
+    | `Exte_temp_body x -> R.Case ("Exte_temp_body",
+        map_extension_template_body env x
+      )
+    | `Func_defi x -> R.Case ("Func_defi",
+        map_function_definition env x
+      )
+    | `Func_decl x -> R.Case ("Func_decl",
+        map_function_declaration env x
+      )
+    )
+  in
+  R.Tuple [v1; v2; v3; v4]
 
 and map_extension_template_body (env : env) (x : CST.extension_template_body) =
   (match x with
@@ -2124,6 +2049,46 @@ and map_given_constructor (env : env) ((v1, v2, v3, v4, v5) : CST.given_construc
   let v5 = (* ":" *) token env v5 in
   R.Tuple [v1; v2; v3; v4; v5]
 
+and map_given_definition (env : env) ((v1, v2, v3, v4, v5, v6) : CST.given_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_modifiers env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 = (* "given" *) token env v3 in
+  let v4 =
+    (match v4 with
+    | Some x -> R.Option (Some (
+        map_given_constructor env x
+      ))
+    | None -> R.Option None)
+  in
+  let v5 = R.List (List.map (map_given_sig env) v5) in
+  let v6 =
+    (match v6 with
+    | `Stru_inst x -> R.Case ("Stru_inst",
+        map_structural_instance env x
+      )
+    | `Anno_type_opt_EQ_inde_exp (v1, v2) -> R.Case ("Anno_type_opt_EQ_inde_exp",
+        let v1 = map_annotated_type env v1 in
+        let v2 =
+          (match v2 with
+          | Some (v1, v2) -> R.Option (Some (
+              let v1 = (* "=" *) token env v1 in
+              let v2 = map_indentable_expression env v2 in
+              R.Tuple [v1; v2]
+            ))
+          | None -> R.Option None)
+        in
+        R.Tuple [v1; v2]
+      )
+    )
+  in
+  R.Tuple [v1; v2; v3; v4; v5; v6]
+
 and map_given_pattern (env : env) ((v1, v2) : CST.given_pattern) =
   let v1 = (* "given" *) token env v1 in
   let v2 = map_type_ env v2 in
@@ -2150,6 +2115,18 @@ and map_if_condition (env : env) (x : CST.if_condition) =
       R.Tuple [v1; v2]
     )
   )
+
+and map_import_declaration (env : env) ((v1, v2, v3) : CST.import_declaration) =
+  let v1 = (* "import" *) token env v1 in
+  let v2 = map_namespace_expression env v2 in
+  let v3 =
+    R.List (List.map (fun (v1, v2) ->
+      let v1 = (* "," *) token env v1 in
+      let v2 = map_namespace_expression env v2 in
+      R.Tuple [v1; v2]
+    ) v3)
+  in
+  R.Tuple [v1; v2; v3]
 
 and map_import_selectors (env : env) (x : CST.import_selectors) =
   map_namespace_selectors env x
@@ -2423,6 +2400,26 @@ and map_namespace_selectors (env : env) ((v1, v2, v3, v4, v5) : CST.namespace_se
   let v5 = (* "}" *) token env v5 in
   R.Tuple [v1; v2; v3; v4; v5]
 
+and map_object_definition (env : env) ((v1, v2, v3, v4, v5) : CST.object_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_modifiers env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 =
+    (match v3 with
+    | Some tok -> R.Option (Some (
+        (* "case" *) token env tok
+      ))
+    | None -> R.Option None)
+  in
+  let v4 = (* "object" *) token env v4 in
+  let v5 = map_object_definition_ env v5 in
+  R.Tuple [v1; v2; v3; v4; v5]
+
 and map_object_definition_ (env : env) ((v1, v2, v3, v4) : CST.object_definition_) =
   let v1 = map_type_identifier env v1 in
   let v2 =
@@ -2447,6 +2444,24 @@ and map_object_definition_ (env : env) ((v1, v2, v3, v4) : CST.object_definition
     | None -> R.Option None)
   in
   R.Tuple [v1; v2; v3; v4]
+
+and map_package_clause (env : env) ((v1, v2, v3) : CST.package_clause) =
+  let v1 = (* "package" *) token env v1 in
+  let v2 = map_package_identifier env v2 in
+  let v3 =
+    (match v3 with
+    | Some x -> R.Option (Some (
+        map_structural_type env x
+      ))
+    | None -> R.Option None)
+  in
+  R.Tuple [v1; v2; v3]
+
+and map_package_object (env : env) ((v1, v2, v3) : CST.package_object) =
+  let v1 = (* "package" *) token env v1 in
+  let v2 = (* "object" *) token env v2 in
+  let v3 = map_object_definition_ env v3 in
+  R.Tuple [v1; v2; v3]
 
 and map_param_type (env : env) (x : CST.param_type) =
   (match x with
@@ -2961,6 +2976,19 @@ and map_template_body (env : env) (x : CST.template_body) =
     )
   )
 
+and map_trait_definition (env : env) ((v1, v2, v3, v4) : CST.trait_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_modifiers env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 = (* "trait" *) token env v3 in
+  let v4 = map_class_definition_ env v4 in
+  R.Tuple [v1; v2; v3; v4]
+
 and map_tuple_expression (env : env) ((v1, v2, v3, v4, v5) : CST.tuple_expression) =
   let v1 = (* "(" *) token env v1 in
   let v2 = map_expression env v2 in
@@ -3089,6 +3117,35 @@ and map_type_constructor (env : env) ((v1, v2, v3, v4, v5) : CST.type_constructo
     | None -> R.Option None)
   in
   R.Tuple [v1; v2; v3; v4; v5]
+
+and map_type_definition (env : env) ((v1, v2, v3, v4, v5, v6) : CST.type_definition) =
+  let v1 = R.List (List.map (map_annotation env) v1) in
+  let v2 =
+    (match v2 with
+    | Some x -> R.Option (Some (
+        map_modifiers env x
+      ))
+    | None -> R.Option None)
+  in
+  let v3 =
+    (match v3 with
+    | Some tok -> R.Option (Some (
+        (* "opaque" *) token env tok
+      ))
+    | None -> R.Option None)
+  in
+  let v4 = (* "type" *) token env v4 in
+  let v5 = map_type_constructor env v5 in
+  let v6 =
+    (match v6 with
+    | Some (v1, v2) -> R.Option (Some (
+        let v1 = (* "=" *) token env v1 in
+        let v2 = map_type_ env v2 in
+        R.Tuple [v1; v2]
+      ))
+    | None -> R.Option None)
+  in
+  R.Tuple [v1; v2; v3; v4; v5; v6]
 
 and map_type_lambda (env : env) ((v1, v2, v3, v4, v5, v6, v7) : CST.type_lambda) =
   let v1 = (* "[" *) token env v1 in
@@ -3316,7 +3373,7 @@ let map_top_level_definition (env : env) (x : CST.top_level_definition) =
         | `Exp x -> R.Case ("Exp",
             map_expression env x
           )
-        | `Choice_given_defi x -> R.Case ("Choice_given_defi",
+        | `Choice_choice_given_defi x -> R.Case ("Choice_choice_given_defi",
             map_definition env x
           )
         )
@@ -3349,9 +3406,9 @@ let map_top_level_definition (env : env) (x : CST.top_level_definition) =
       in
       R.Tuple [v1; v2]
     )
-  | `Choice_choice_given_defi x -> R.Case ("Choice_choice_given_defi",
+  | `Choice_choice_choice_given_defi x -> R.Case ("Choice_choice_choice_given_defi",
       (match x with
-      | `Choice_given_defi x -> R.Case ("Choice_given_defi",
+      | `Choice_choice_given_defi x -> R.Case ("Choice_choice_given_defi",
           map_definition env x
         )
       | `End_marker x -> R.Case ("End_marker",
