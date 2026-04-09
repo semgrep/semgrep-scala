@@ -60,33 +60,5 @@ module.exports = grammar(base_grammar, {
             ),
 
         _definition: ($, previous) => choice(previous, $.semgrep_val_or_var_definition),
-
-        // Fix for ResultExpr/BlockResult typed implicit parameter form:
-        //   { implicit request: Request[AnyContent] => body }
-        // Both the Scala 2.13 and 3.4 specs (§6.23) define ResultExpr as:
-        //   (Bindings | (['implicit'] id | '_') ':' CompoundType) '=>' Block
-        // The upstream grammar uses seq(optional("implicit"), $._identifier),
-        // which cannot accommodate a type annotation. Fixed upstream in our
-        // patch (0001-fix-lambda-typed-implicit-parameter.patch); mirrored
-        // here in the interim. Split into an explicit 'implicit' branch (with
-        // optional type) and a plain identifier branch to avoid new LR
-        // conflicts.
-        lambda_expression: $ =>
-            prec.right(
-                seq(
-                    optional(seq(field("type_parameters", $.type_parameters), "=>")),
-                    field(
-                        "parameters",
-                        choice(
-                            $.bindings,
-                            seq("implicit", $._identifier, optional(seq(":", field("type", $._param_type)))),
-                            $._identifier,
-                            $.wildcard,
-                        ),
-                    ),
-                    choice("=>", "?=>"),
-                    $._indentable_expression,
-                ),
-            ),
     },
 });
