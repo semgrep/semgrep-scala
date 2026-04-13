@@ -8,6 +8,8 @@
 open! Sexplib.Conv
 open Tree_sitter_run
 
+type tok_using = Token.t
+
 type outdent = Token.t
 
 type raw_string_multiline_middle = Token.t
@@ -23,7 +25,7 @@ type boolean_literal = [
 
 type character_literal = Token.t
 
-type tok_using = Token.t
+type tok_starslash = Token.t
 
 type indent = Token.t
 
@@ -31,13 +33,11 @@ type backquoted_id = Token.t (* pattern `[^\n`]+` *)
 
 type semgrep_ellipsis = Token.t
 
-type tok_starslash = Token.t
+type tok_slashstar = Token.t
 
 type escape_sequence = Token.t
 
-type tok_slashstar = Token.t
-
-type tok_dollar_choice_dollar = Token.t
+type tok_slashslash = Token.t
 
 type alpha_identifier =
   Token.t (* pattern [\p{Lu}\p{Lt}\p{Nl}\p{Lo}\p{Lm}\$\p{Ll}_\u00AA\u00BB\u02B0-\u02B8\u02C0-\u02C1\u02E0-\u02E4\u037A\u1D78\u1D9B-\u1DBF\u2071\u207F\u2090-\u209C\u2C7C-\u2C7D\uA69C-\uA69D\uA770\uA7F8-\uA7F9\uAB5C-\uAB5F\$][\p{Lu}\p{Lt}\p{Nl}\p{Lo}\p{Lm}\$\p{Ll}_\u00AA\u00BB\u02B0-\u02B8\u02C0-\u02C1\u02E0-\u02E4\u037A\u1D78\u1D9B-\u1DBF\u2071\u207F\u2090-\u209C\u2C7C-\u2C7D\uA69C-\uA69D\uA770\uA7F8-\uA7F9\uAB5C-\uAB5F0-9\$_\p{Ll}]*(_[\-!#%&*+\/\\:<=>?@\u005e\u007c~\p{Sm}\p{So}]+)? *)
@@ -46,7 +46,9 @@ type floating_point_literal = Token.t
 
 type interpolated_string_middle = Token.t
 
-type tok_slashslash = Token.t
+type tok_prec_p100___semgrep_statement = Token.t
+
+type unit_ = (Token.t (* "(" *) * Token.t (* ")" *))
 
 type automatic_semicolon = Token.t
 
@@ -68,21 +70,19 @@ type soft_identifier = [
 
 type semgrep_ellipsis_metavariable = Token.t
 
-type using_directive_value = Token.t
+type using_directive_key = Token.t
 
 type semgrep_metavariable = Token.t
 
-type unit_ = (Token.t (* "(" *) * Token.t (* ")" *))
-
 type integer_literal = Token.t
+
+type tok_prec_p100___semgrep_expression = Token.t
 
 type tok_prec_p100___semgrep_member_decl = Token.t
 
-type tok_prec_p100___semgrep_statement = Token.t
-
 type operator_identifier = Token.t
 
-type tok_hashbang_pat_4fd4a56 = Token.t
+type tok_dollar_choice_dollar = Token.t
 
 type imm_tok_dquot = Token.t (* "\"" *)
 
@@ -90,14 +90,14 @@ type raw_string_start = Token.t
 
 type single_line_string_end = Token.t
 
-type tok_prec_p100___semgrep_expression = Token.t
+type tok_pat_5058f1a = Token.t
 
 type anon_choice_EQGT_ce418c1 = [
     `EQGT of Token.t (* "=>" *)
   | `QMARKEQGT of Token.t (* "?=>" *)
 ]
 
-type tok_pat_5058f1a = Token.t
+type tok_hashbang_pat_4fd4a56 = Token.t
 
 type interpolation_identifier =
   Token.t (* pattern [\p{Lu}\p{Lt}\p{Nl}\p{Lo}\p{Lm}\p{Ll}_\u00AA\u00BB\u02B0-\u02B8\u02C0-\u02C1\u02E0-\u02E4\u037A\u1D78\u1D9B-\u1DBF\u2071\u207F\u2090-\u209C\u2C7C-\u2C7D\uA69C-\uA69D\uA770\uA7F8-\uA7F9\uAB5C-\uAB5F][\p{Lu}\p{Lt}\p{Nl}\p{Lo}\p{Lm}\p{Ll}_\u00AA\u00BB\u02B0-\u02B8\u02C0-\u02C1\u02E0-\u02E4\u037A\u1D78\u1D9B-\u1DBF\u2071\u207F\u2090-\u209C\u2C7C-\u2C7D\uA69C-\uA69D\uA770\uA7F8-\uA7F9\uAB5C-\uAB5F0-9_\p{Ll}]* *)
@@ -105,6 +105,8 @@ type interpolation_identifier =
 type simple_string_start = Token.t
 
 type multiline_string_end = Token.t
+
+type using_directive_value = Token.t
 
 type interpolated_multiline_string_middle = Token.t
 
@@ -116,10 +118,6 @@ type namespace_wildcard = [
   | `Given of Token.t (* "given" *)
 ]
 
-type using_directive_key = Token.t
-
-type dollar_escape = tok_dollar_choice_dollar
-
 type semicolon = [
     `SEMI of Token.t (* ";" *)
   | `Auto_semi of automatic_semicolon (*tok*)
@@ -130,6 +128,8 @@ type identifier = [
   | `Back_id of backquoted_id (*tok*)
   | `Soft_id of soft_identifier
 ]
+
+type dollar_escape = tok_dollar_choice_dollar
 
 type shebang = tok_hashbang_pat_4fd4a56
 
@@ -264,12 +264,6 @@ and annotation = (
   * simple_type
   * arguments list (* zero or more *)
 )
-
-and anon_choice_LCURL_blk_RCURL_f46f1cd = [
-    `LCURL_blk_RCURL of (Token.t (* "{" *) * block * Token.t (* "}" *))
-  | `LBRACK_type_RBRACK of (Token.t (* "[" *) * type_ * Token.t (* "]" *))
-  | `Id of identifier
-]
 
 and anon_choice_dollar_esc_fba2882 = [
     `Dollar_esc of dollar_escape
@@ -444,7 +438,7 @@ and catch_clause = (
 and class_constructor = (
     type_identifier
   * type_parameters option
-  * annotation option
+  * constructor_annotation option
   * access_modifier option
   * (automatic_semicolon (*tok*) option * class_parameters)
       list (* zero or more *)
@@ -516,6 +510,12 @@ and compound_type = [
       * refinement
     )
 ]
+
+and constructor_annotation = (
+    Token.t (* "@" *)
+  * simple_type
+  * arguments option
+)
 
 and constructor_application = [
     `Anno_type of annotated_type
@@ -689,12 +689,10 @@ and expression = [
         (type_parameters * Token.t (* "=>" *)) option
       * [
             `Bindis of bindings
-          | `Impl_choice_id_opt_COLON_choice_type of (
-                Token.t (* "implicit" *)
+          | `Opt_impl_choice_id of (
+                Token.t (* "implicit" *) option
               * type_identifier
-              * (Token.t (* ":" *) * param_type) option
             )
-          | `Choice_id of type_identifier
           | `Wild of Token.t (* "_" *)
         ]
       * anon_choice_EQGT_ce418c1
@@ -961,6 +959,8 @@ and interpolation = (
   * [ `Alia_interp_id of interpolation_identifier (*tok*) | `Blk_ of block_ ]
 )
 
+and lazy_parameter_type = (Token.t (* "=>" *) * type_)
+
 and lower_bound = (Token.t (* ">:" *) * type_)
 
 and name_and_type = (type_identifier * Token.t (* ":" *) * param_type)
@@ -1025,8 +1025,11 @@ and package_object = (
 
 and param_type = [
     `Type of type_
-  | `Lazy_param_type of (Token.t (* "=>" *) * type_)
-  | `Repe_param_type of (type_ * Token.t (* "*" *))
+  | `Lazy_param_type of lazy_parameter_type
+  | `Repe_param_type of (
+        [ `Type of type_ | `Lazy_param_type of lazy_parameter_type ]
+      * Token.t (* "*" *)
+    )
 ]
 
 and parameter = [
@@ -1117,7 +1120,14 @@ and prefix_expression = (
 )
 
 and quote_expression = (
-    Token.t (* "'" *) * anon_choice_LCURL_blk_RCURL_f46f1cd
+    Token.t (* "'" *)
+  * [
+        `LCURL_opt_blk_RCURL of block_
+      | `LBRACK_type_RBRACK of (
+            Token.t (* "[" *) * type_ * Token.t (* "]" *)
+        )
+      | `Id of identifier
+    ]
 )
 
 and raw_string = [
@@ -1171,6 +1181,7 @@ and simple_expression = [
       | `Gene_func of generic_function
       | `Call_exp of call_expression
     ]
+  | `Symb_lit of (Token.t (* "'" *) * identifier)
   | `Semg_meta of semgrep_metavariable (*tok*)
   | `Deep_exp of (Token.t (* "<..." *) * expression * Token.t (* "...>" *))
   | `Semg_ellips_meta of semgrep_ellipsis_metavariable (*tok*)
@@ -1205,7 +1216,14 @@ and simple_type = [
 ]
 
 and splice_expression = (
-    Token.t (* "$" *) * anon_choice_LCURL_blk_RCURL_f46f1cd
+    Token.t (* "$" *)
+  * [
+        `LCURL_blk_RCURL of (Token.t (* "{" *) * block * Token.t (* "}" *))
+      | `LBRACK_type_RBRACK of (
+            Token.t (* "[" *) * type_ * Token.t (* "]" *)
+        )
+      | `Id of identifier
+    ]
 )
 
 and start_val = (
@@ -1438,11 +1456,11 @@ type compilation_unit = (
       option
 )
 
-type transparent_modifier (* inlined *) = Token.t (* "transparent" *)
+type tracked_modifier (* inlined *) = Token.t (* "tracked" *)
+
+type wildcard (* inlined *) = Token.t (* "_" *)
 
 type null_literal (* inlined *) = Token.t (* "null" *)
-
-type tracked_modifier (* inlined *) = Token.t (* "tracked" *)
 
 type infix_modifier (* inlined *) = Token.t (* "infix" *)
 
@@ -1456,7 +1474,7 @@ type inline_modifier (* inlined *) = Token.t (* "inline" *)
 
 type opaque_modifier (* inlined *) = Token.t (* "opaque" *)
 
-type wildcard (* inlined *) = Token.t (* "_" *)
+type transparent_modifier (* inlined *) = Token.t (* "transparent" *)
 
 type block_comment (* inlined *) = (
     tok_slashstar (*tok*)
@@ -1470,6 +1488,8 @@ type block_comment (* inlined *) = (
 
 type aliased_interpolation_identifier (* inlined *) =
   interpolation_identifier (*tok*)
+
+type symbol_literal (* inlined *) = (Token.t (* "'" *) * identifier)
 
 type identifier_ (* inlined *) = [
     `Id of identifier
@@ -1569,19 +1589,15 @@ type lambda_expression (* inlined *) = (
     (type_parameters * Token.t (* "=>" *)) option
   * [
         `Bindis of bindings
-      | `Impl_choice_id_opt_COLON_choice_type of (
-            Token.t (* "implicit" *)
+      | `Opt_impl_choice_id of (
+            Token.t (* "implicit" *) option
           * type_identifier
-          * (Token.t (* ":" *) * param_type) option
         )
-      | `Choice_id of type_identifier
       | `Wild of Token.t (* "_" *)
     ]
   * anon_choice_EQGT_ce418c1
   * indentable_expression
 )
-
-type lazy_parameter_type (* inlined *) = (Token.t (* "=>" *) * type_)
 
 type macro_body (* inlined *) = (
     Token.t (* "macro" *) * anon_choice_infix_exp_dc476f6
@@ -1612,7 +1628,10 @@ type projected_type (* inlined *) = (
     simple_type * Token.t (* "#" *) * type_identifier
 )
 
-type repeated_parameter_type (* inlined *) = (type_ * Token.t (* "*" *))
+type repeated_parameter_type (* inlined *) = (
+    [ `Type of type_ | `Lazy_param_type of lazy_parameter_type ]
+  * Token.t (* "*" *)
+)
 
 type return_expression (* inlined *) = (
     Token.t (* "return" *)

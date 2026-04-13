@@ -22,32 +22,18 @@ Last change in file:
 ---
 File: semgrep-grammars/src/semgrep-scala/grammar.js
 Git repo name: phoenix
-Latest commit in repo: b72f22365e43fe19326daecc687c7bd3d713ec62
+Latest commit in repo: 7a1949b4d82471269260ebcf945d542b5849ad52
 Last change in file:
-  commit b72f22365e43fe19326daecc687c7bd3d713ec62
+  commit 7a1949b4d82471269260ebcf945d542b5849ad52
   Author: Cooper Pierce <cooper@semgrep.com>
-  Date:   Wed Apr 8 15:54:00 2026 -0400
+  Date:   Mon Apr 13 15:21:53 2026 -0400
   
-      feat(scala): pattern extensions
+      feat(scala): add Scala 2 symbol literal support
       
-      Adds semgrep-scala, extending the tree-sitter-scala grammar with
-      semgrep pattern constructs: metavariables ($FOO), ellipsis (...),
-      named ellipsis ($...ARGS), and deep expressions (<... e ...>).
+      Scala 2 symbol literals (`'foo`) use the same `'` prefix as Scala 3
+      quote expressions. Adds `symbol_literal` as a lower-precedence rule
+      so `quote_expression` wins by default. Downstream consumers (like
+      semgrep's mapper) can check context to decide interpretation.
       
-      Grammar extensions (grammar.js):
-      - __SEMGREP_EXPRESSION, __SEMGREP_STATEMENT, __SEMGREP_MEMBER_DECL
-        sentinel tokens as top-level entry points
-      - semgrep_metavariable, semgrep_ellipsis, semgrep_ellipsis_metavariable,
-        deep_expression as new terminal/rule types
-      - _simple_expression extended to allow semgrep constructs in expression
-        positions (arguments, bodies, infix operands, etc.)
-      - _pattern extended for ellipsis in case class and tuple patterns
-      - parameter and class_parameter extended for ellipsis in parameter lists
-      - enumerator extended for ellipsis between for-comprehension generators
-      - semgrep_val_or_var_definition for $DECL $NAME = expr patterns
-      
-      Test corpus covers definitions, disambiguation, expressions, patterns,
-      statements, and real-world security/taint patterns.
-      
-      Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+      Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ---
