@@ -12,19 +12,13 @@
 *)
 val string :
   ?src_file:string -> string ->
-  CST.compilation_unit Tree_sitter_run.Parsing_result.t
+  (CST.compilation_unit, CST.extra) Tree_sitter_run.Parsing_result.t
 
 (** Parse a scala program from a file into a typed OCaml CST.
     See the [string] function above for details. *)
 val file :
   string ->
-  CST.compilation_unit Tree_sitter_run.Parsing_result.t
-
-(** Whether to print debugging information. Default: false. *)
-val debug : bool ref
-
-(** The original tree-sitter parser. *)
-val ts_parser : Tree_sitter_bindings.Tree_sitter_API.ts_parser
+  (CST.compilation_unit, CST.extra) Tree_sitter_run.Parsing_result.t
 
 (** Parse a program into a tree-sitter CST. *)
 val parse_source_string :
@@ -36,4 +30,4 @@ val parse_source_file : string -> Tree_sitter_run.Tree_sitter_parsing.t
 (** Parse a tree-sitter CST into an OCaml typed CST. *)
 val parse_input_tree :
   Tree_sitter_run.Tree_sitter_parsing.t ->
-  CST.compilation_unit Tree_sitter_run.Parsing_result.t
+  (CST.compilation_unit, CST.extra) Tree_sitter_run.Parsing_result.t
