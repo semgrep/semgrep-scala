@@ -624,6 +624,19 @@ and map_anon_choice_pat_a6d147b (env : env) (x : CST.anon_choice_pat_a6d147b) =
     )
   )
 
+and map_anon_choice_type_807f104 (env : env) (x : CST.anon_choice_type_807f104) =
+  (match x with
+  | `Type x -> R.Case ("Type",
+      map_type_ env x
+    )
+  | `Semg_ellips tok -> R.Case ("Semg_ellips",
+      (* semgrep_ellipsis *) token env tok
+    )
+  | `Semg_ellips_meta tok -> R.Case ("Semg_ellips_meta",
+      (* semgrep_ellipsis_metavariable *) token env tok
+    )
+  )
+
 and map_anon_param_rep_COMMA_param_opt_COMMA_bde8b1d (env : env) ((v1, v2, v3) : CST.anon_param_rep_COMMA_param_opt_COMMA_bde8b1d) =
   let v1 = map_parameter env v1 in
   let v2 =
@@ -846,7 +859,15 @@ and map_case_block (env : env) (x : CST.case_block) =
     )
   | `LCURL_rep1_case_clause_RCURL (v1, v2, v3) -> R.Case ("LCURL_rep1_case_clause_RCURL",
       let v1 = (* "{" *) token env v1 in
-      let v2 = R.List (List.map (map_case_clause env) v2) in
+      let v2 =
+        R.List (List.map (map_semgrep_case_clause env) v2)
+      in
+      let v3 = (* "}" *) token env v3 in
+      R.Tuple [v1; v2; v3]
+    )
+  | `LCURL_semg_ellips_RCURL (v1, v2, v3) -> R.Case ("LCURL_semg_ellips_RCURL",
+      let v1 = (* "{" *) token env v1 in
+      let v2 = (* semgrep_ellipsis *) token env v2 in
       let v3 = (* "}" *) token env v3 in
       R.Tuple [v1; v2; v3]
     )
@@ -2146,7 +2167,9 @@ and map_indented_block (env : env) ((v1, v2, v3, v4) : CST.indented_block) =
 
 and map_indented_cases (env : env) ((v1, v2, v3) : CST.indented_cases) =
   let v1 = (* indent *) token env v1 in
-  let v2 = R.List (List.map (map_case_clause env) v2) in
+  let v2 =
+    R.List (List.map (map_semgrep_case_clause env) v2)
+  in
   let v3 = (* outdent *) token env v3 in
   R.Tuple [v1; v2; v3]
 
@@ -2635,10 +2658,19 @@ and map_pattern (env : env) (x : CST.pattern) =
     )
   )
 
-and map_postfix_expression (env : env) ((v1, v2) : CST.postfix_expression) =
-  let v1 = map_anon_choice_infix_exp_dc476f6 env v1 in
-  let v2 = map_type_identifier env v2 in
-  R.Tuple [v1; v2]
+and map_postfix_expression (env : env) (x : CST.postfix_expression) =
+  (match x with
+  | `Choice_infix_exp_choice_id (v1, v2) -> R.Case ("Choice_infix_exp_choice_id",
+      let v1 = map_anon_choice_infix_exp_dc476f6 env v1 in
+      let v2 = map_type_identifier env v2 in
+      R.Tuple [v1; v2]
+    )
+  | `Choice_infix_exp__ (v1, v2) -> R.Case ("Choice_infix_exp__",
+      let v1 = map_anon_choice_infix_exp_dc476f6 env v1 in
+      let v2 = (* "_" *) token env v2 in
+      R.Tuple [v1; v2]
+    )
+  )
 
 and map_postfix_expression_choice (env : env) (x : CST.postfix_expression_choice) =
   (match x with
@@ -2748,6 +2780,9 @@ and map_self_type_ascription (env : env) ((v1, v2) : CST.self_type_ascription) =
   let v1 = (* ":" *) token env v1 in
   let v2 = map_type_ env v2 in
   R.Tuple [v1; v2]
+
+and map_semgrep_case_clause (env : env) (x : CST.semgrep_case_clause) =
+  map_case_clause env x
 
 and map_simple_enum_case (env : env) ((v1, v2) : CST.simple_enum_case) =
   let v1 = map_type_identifier env v1 in
@@ -3099,11 +3134,11 @@ and map_type_ (env : env) (x : CST.type_) =
 
 and map_type_arguments (env : env) ((v1, v2, v3, v4, v5) : CST.type_arguments) =
   let v1 = (* "[" *) token env v1 in
-  let v2 = map_type_ env v2 in
+  let v2 = map_anon_choice_type_807f104 env v2 in
   let v3 =
     R.List (List.map (fun (v1, v2) ->
       let v1 = (* "," *) token env v1 in
-      let v2 = map_type_ env v2 in
+      let v2 = map_anon_choice_type_807f104 env v2 in
       R.Tuple [v1; v2]
     ) v3)
   in
@@ -3442,6 +3477,9 @@ let map_top_level_definition (env : env) (x : CST.top_level_definition) =
         )
       in
       R.Tuple [v1; v2]
+    )
+  | `Semg_case_clause x -> R.Case ("Semg_case_clause",
+      map_semgrep_case_clause env x
     )
   | `Choice_choice_choice_given_defi x -> R.Case ("Choice_choice_choice_given_defi",
       (match x with

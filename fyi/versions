@@ -21,19 +21,36 @@ Last change in file:
       chore: generate and sync from 98bca07a3043ecb195f61817a94a909445d7d637
 ---
 File: semgrep-grammars/src/semgrep-scala/grammar.js
-Git repo name: phoenix
-Latest commit in repo: 7a1949b4d82471269260ebcf945d542b5849ad52
+Git repo name: agent-a90b0139d5abbe678
+Latest commit in repo: 2fb6366a454d83440290fa9f4a0dffe842a420b2
 Last change in file:
-  commit 7a1949b4d82471269260ebcf945d542b5849ad52
-  Author: Cooper Pierce <cooper@semgrep.com>
-  Date:   Mon Apr 13 15:21:53 2026 -0400
+  commit 2fb6366a454d83440290fa9f4a0dffe842a420b2
+  Author: brandonspark <brandon@semgrep.com>
+  Date:   Wed Apr 29 17:43:41 2026 -0700
   
-      feat(scala): add Scala 2 symbol literal support
+      fix(scala): augment grammar for case clauses, match blocks, type args, eta-expansion
       
-      Scala 2 symbol literals (`'foo`) use the same `'` prefix as Scala 3
-      quote expressions. Adds `symbol_literal` as a lower-precedence rule
-      so `quote_expression` wins by default. Downstream consumers (like
-      semgrep's mapper) can check context to decide interpretation.
+      Resolves four Semgrep pattern parsing failures in Scala (LANG-482, LANG-488,
+      LANG-492, LANG-496):
       
-      Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+      - LANG-482: Bare `case $X => ...` clauses outside a `match { }` block now
+        parse via a new `semgrep_case_clause` entry rule wired into
+        `_top_level_definition`.
+      - LANG-488: `case_block` accepts `$.semgrep_ellipsis` (alone or interleaved
+        with concrete `case_clause`s) so patterns like `$X match { ... }` parse
+        cleanly. The ellipsis-only form has a deeply-negative precedence so
+        contexts that admit either a `block` or a `case_block` continue to
+        prefer `block`.
+      - LANG-492: `type_arguments` is replaced (rather than alternated with
+        `previous`) to accept `_type | semgrep_ellipsis | semgrep_ellipsis_metavariable`
+        in each comma-separated entry, avoiding a parser-table conflict with
+        `tuple_type`.
+      - LANG-496: A new `postfix_expression` alternative pairs the upstream
+        operand choice with a literal `_` so `$F _` (and other expressions
+        followed by `_`) parse as eta-expansion. No new conflicts entry was
+        required.
+      
+      Adds 8 corpus tests covering the four ticketed patterns.
+      
+      Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ---
