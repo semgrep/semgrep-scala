@@ -320,6 +320,12 @@ and anon_choice_pat_a6d147b = [
     )
 ]
 
+and anon_choice_type_807f104 = [
+    `Type of type_
+  | `Semg_ellips of semgrep_ellipsis (*tok*)
+  | `Semg_ellips_meta of semgrep_ellipsis_metavariable (*tok*)
+]
+
 and anon_param_rep_COMMA_param_opt_COMMA_bde8b1d = (
     parameter
   * (Token.t (* "," *) * parameter) list (* zero or more *)
@@ -396,8 +402,11 @@ and case_block = [
     `LCURL_RCURL of (Token.t (* "{" *) * Token.t (* "}" *))
   | `LCURL_rep1_case_clause_RCURL of (
         Token.t (* "{" *)
-      * case_clause list (* one or more *)
+      * semgrep_case_clause list (* one or more *)
       * Token.t (* "}" *)
+    )
+  | `LCURL_semg_ellips_RCURL of (
+        Token.t (* "{" *) * semgrep_ellipsis (*tok*) * Token.t (* "}" *)
     )
 ]
 
@@ -885,7 +894,7 @@ and indented_block = (
 
 and indented_cases = (
     indent (*tok*)
-  * case_clause list (* one or more *)
+  * semgrep_case_clause list (* one or more *)
   * outdent (*tok*)
 )
 
@@ -1100,7 +1109,14 @@ and pattern = [
   | `Semg_ellips of semgrep_ellipsis (*tok*)
 ]
 
-and postfix_expression = (anon_choice_infix_exp_dc476f6 * type_identifier)
+and postfix_expression = [
+    `Choice_infix_exp_choice_id of (
+        anon_choice_infix_exp_dc476f6 * type_identifier
+    )
+  | `Choice_infix_exp__ of (
+        anon_choice_infix_exp_dc476f6 * Token.t (* "_" *)
+    )
+]
 
 and postfix_expression_choice = [
     `Post_exp of postfix_expression
@@ -1159,6 +1175,8 @@ and self_type = (
 )
 
 and self_type_ascription = (Token.t (* ":" *) * type_)
+
+and semgrep_case_clause = case_clause
 
 and simple_enum_case = (type_identifier * extends_clause option)
 
@@ -1303,8 +1321,8 @@ and type_ = [
 
 and type_arguments = (
     Token.t (* "[" *)
-  * type_
-  * (Token.t (* "," *) * type_) list (* zero or more *)
+  * anon_choice_type_807f104
+  * (Token.t (* "," *) * anon_choice_type_807f104) list (* zero or more *)
   * Token.t (* "," *) option
   * Token.t (* "]" *)
 )
@@ -1439,6 +1457,7 @@ type top_level_definition = [
           | `Var_decl of var_declaration
         ]
     )
+  | `Semg_case_clause of semgrep_case_clause
   | `Choice_choice_choice_given_defi of [
         `Choice_choice_given_defi of definition
       | `End_marker of end_marker
